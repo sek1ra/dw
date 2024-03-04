@@ -90,7 +90,9 @@ a {
   transition: 0.2s;
 }
 #page-wrapper {
-  padding-top: 12px;
+  @media(max-width:750px) {
+    padding-top: 150px;
+  }
 }
 section, header {
   width: 100%;
@@ -135,7 +137,14 @@ header {
   align-items: center;
   justify-content: space-between;
   padding-bottom: 12px;
+  padding-top: 12px;
   margin-bottom: 74px;
+  @media(max-width:750px) {
+    position: fixed;
+    top: 0;left: 0;right: 0;
+    background: #fff;
+    z-index: 6;
+  }
   .logo {
     display: flex;
     gap: 12px;
@@ -143,6 +152,9 @@ header {
     text-decoration: none;
     svg {
       width: 75px;
+      @media(max-width:750px) {
+        width: 90px;
+      }
       @media(max-width:550px) {
         width: 120px;
       }
@@ -294,7 +306,7 @@ header {
   }
 }
 @media(max-width:1140px) {
-  #main-menu + #main-menu-mask + #page-wrapper header nav {
+  #main-menu + #page-wrapper header nav {
       position: fixed;
       top:0;bottom: 0;
       width: 300px;
@@ -316,14 +328,14 @@ header {
         }
       }
   }
-  #main-menu:checked + #main-menu-mask {
+  #main-menu:checked + #page-wrapper header #main-menu-mask {
     position: fixed;
     top: 0;right: 0;bottom: 0;left: 0;
     background: rgba(0, 0, 0, 0.5);
     z-index:8;
     display: block;
   }
-  #main-menu:checked + #main-menu-mask + #page-wrapper header nav {
+  #main-menu:checked + #page-wrapper header nav {
     right: 0;
   }
 }
