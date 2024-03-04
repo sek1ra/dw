@@ -81,6 +81,10 @@ h1 {
   text-align: center;
   margin-bottom: 32px;
   text-transform: uppercase;
+  @media(max-width:1000px) {
+    font-size: 48px;
+    line-height: 50px;
+  }
 }
 a {
   transition: 0.2s;
@@ -123,6 +127,9 @@ section, header {
   position: absolute;
   left: -9999px;
 }
+#main-menu-mask {
+  display: none;
+}
 header {
   display: flex;
   align-items: center;
@@ -134,14 +141,20 @@ header {
     gap: 12px;
     align-items: center;
     text-decoration: none;
-    img {
-      width: 75px; 
+    svg {
+      width: 75px;
+      @media(max-width:550px) {
+        width: 120px;
+      }
     }
     span {
       text-transform: uppercase;
       font: 500 10px/11px var(--font-main);
       letter-spacing: 0.03em;    
       color: var(--color-main);
+      @media(max-width:760px) {
+        display: none;
+      }
     }
     label {
       font: 500 10px/11px var(--font-main);
@@ -167,12 +180,17 @@ header {
       &::after {
         right: 0;
       }
-    }  
+      @media(max-width:760px) {
+        display: none;
+      }
+    }
   } 
-  nav ul {
-    display: flex; 
-    gap: 4px;   
-  } 
+  nav {
+    ul {
+      display: flex; 
+      gap: 4px;   
+    } 
+  }
   .controls {
     display: flex;
     align-items: stretch;
@@ -187,20 +205,37 @@ header {
         background: #F2EEE3;
         border-radius: 38px;
       }
+      @media(max-width:550px) {
+        display: none;
+      }
     }
     .login {
       background: var(--color-second);
       padding: 0 10px;
-      color: #fff;
       display: flex;
       align-items: center;
       text-decoration: none;
       margin-left: 4px;
       border-radius: 38px;
-      text-transform: uppercase;
-      font: 500 10px/11px var(--font-main);
+      @media(max-width:550px) {
+        height: 48px;
+      }
+      span {
+        text-transform: uppercase;
+        font: 500 10px/11px var(--font-main);
+        color: #fff;
+        @media(max-width:550px) {
+          font-size: 14px;
+        }
+      }
       svg {
         margin-left: 4px;
+        width: 14px;
+        height: 14px;
+        @media(max-width:550px) {
+          width: 16px;
+          height: 16px;
+        }
         path {
           fill: #fff;
           transition: 0.2s;
@@ -208,7 +243,9 @@ header {
       }
       &:hover {
         background: var(--color-second-light);
-        color: var(--color-second);
+        span {
+          color: var(--color-second);
+        }
         svg path {
           fill: var(--color-second)
         }
@@ -217,6 +254,17 @@ header {
   }
   .main-menu-button {
     display: none;
+    cursor: pointer;
+    @media(max-width:1150px) {
+      display: block;
+      margin-left: 8px;
+      width: 32px;
+      height: 32px;
+    }
+    @media(max-width:750px) {
+      width: 48px;
+      height: 48px;
+    }
   }
 }
 .tags {
@@ -243,6 +291,40 @@ header {
       color: var(--color-second-light);
       border: 2px solid var(--color-second);
     }
+  }
+}
+@media(max-width:1140px) {
+  #main-menu + #main-menu-mask + #page-wrapper header nav {
+      position: fixed;
+      top:0;bottom: 0;
+      width: 300px;
+      right: -300px;
+      transition: 0.2s;
+      z-index: 10;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      ul {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 24px;
+        a {
+          border: none;
+          font-size: 14px;
+        }
+      }
+  }
+  #main-menu:checked + #main-menu-mask {
+    position: fixed;
+    top: 0;right: 0;bottom: 0;left: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index:8;
+    display: block;
+  }
+  #main-menu:checked + #main-menu-mask + #page-wrapper header nav {
+    right: 0;
   }
 }
 .marquee-container {
@@ -274,12 +356,19 @@ header {
     box-sizing: border-box;
     position: relative;
     border-bottom: 1px solid var(--color-main);
+    @media(max-width:650px) {
+      width: 100%;
+      padding-bottom: 40px;
+    }
     &::before {
       content:"";
       position: absolute;
       right: -12px;top: 0;bottom: 12px;
       width: 1px;
       background: var(--color-main);
+      @media(max-width:650px) {
+        display: none;
+      }
     }
     img {
       max-width: 100%;
@@ -289,6 +378,7 @@ header {
     .data {
       display: flex;
       flex-wrap: wrap;
+      align-items: center;
       justify-content: space-between;
       gap: 24px;
       .name {
@@ -305,13 +395,41 @@ footer {
   section {
     display: flex;
     gap: 12px;
+    @media(max-width:650px) {
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+    }
+    svg {
+      width: 75px;
+      @media(max-width:650px) {
+        width: 200px;
+      }
+    }
     .info {
       max-width: 194px;
+      @media(max-width:650px) {
+        max-width: 100%;
+        padding-left: 70px;
+        padding-right: 70px;
+        p {
+          text-align: center;
+        }
+      }
     }
     .contacts {
       margin-left: 300px;
       display: flex;
       flex-direction: column;
+      @media(max-width:1000px) {
+        margin-left: auto;
+      }
+      @media(max-width:650px) {
+        margin-left: 0;
+        p, a {
+          text-align: center;
+        }
+      }
     }
     p {
       opacity: 0.65;
