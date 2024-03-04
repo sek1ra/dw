@@ -1,0 +1,338 @@
+/* Определение переменных */
+:root {
+  --font-main: 'Inter', sans-serif;
+  --font-title: 'Constantine', serif;
+  --color-main: #1C1E1F;
+  --color-second: #577A9A;
+  --color-second-light: #E3EAE8;
+  --color-dark: #2D3032;
+}
+// Reset базовых стилей
+html,
+body,
+div,
+span,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a,
+img,
+ul,
+ol,
+li,
+form,
+input,
+button,
+textarea,
+table,
+td,
+th,
+tr,
+blockquote {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+// Нормализация стилей
+body {
+  line-height: 1;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+blockquote,
+q {
+  quotes: none;
+}
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: '';
+  content: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+//Основные стили
+html, body {
+  font-family: var(--font-main);
+}
+h1, h2, h3 {
+  font-family: var(--font-title);
+}
+h1 {
+  font: 400 66px/63px var(--font-title);
+  letter-spacing: -0.06em;
+  text-align: center;
+  margin-bottom: 32px;
+  text-transform: uppercase;
+}
+a {
+  transition: 0.2s;
+}
+#page-wrapper {
+  padding-top: 12px;
+}
+section, header {
+  width: 100%;
+  max-width: 1200px;
+  box-sizing: border-box;
+  padding-left: 12px;
+  padding-right: 12px;
+  margin: 0 auto;
+}
+.primary-btn {
+  background-color: var(--color-dark);
+  font-size: 10px;
+  text-transform: uppercase;
+  color: #fff;
+  padding: 0 10px;
+  border-radius: 38px;
+  cursor: pointer;
+}
+.light-btn {
+  font: 500 10px/11px var(--font-main);
+  letter-spacing: -0.03em;
+  padding: 7px 10px;
+  border: 1px solid var(--color-main);
+  border-radius: 38px;
+  text-decoration: none;
+  color: var(--color-main);
+  text-transform: uppercase;
+  &:hover {
+    border-color: var(--color-second);
+    color: var(--color-second);
+  }
+}
+#main-menu {
+  position: absolute;
+  left: -9999px;
+}
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  margin-bottom: 74px;
+  .logo {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    text-decoration: none;
+    img {
+      width: 75px; 
+    }
+    span {
+      text-transform: uppercase;
+      font: 500 10px/11px var(--font-main);
+      letter-spacing: 0.03em;    
+      color: var(--color-main);
+    }
+    label {
+      font: 500 10px/11px var(--font-main);
+      letter-spacing: 0.03em;    
+      position: relative;
+      padding: 0 12px;
+      cursor: pointer;
+      color: var(--color-main);
+      &::before, &::after {
+        content:"";
+        position: absolute; 
+        width: 12px;
+        height: 22px; 
+        background: url(~/src/img/wreath@3x.jpg);
+        background-size: 100% 100%;
+        top:50%;  
+        margin-top: -11px;
+      } 
+      &::before {
+        left: 0;
+        transform: scaleX(-1);
+      }
+      &::after {
+        right: 0;
+      }
+    }  
+  } 
+  nav ul {
+    display: flex; 
+    gap: 4px;   
+  } 
+  .controls {
+    display: flex;
+    align-items: stretch;
+    form {
+      display: flex;
+      align-items: stretch;
+      input {
+        font: 500 10px/11px var(--font-main);
+        margin-right: 4px;
+        padding: 10px 17px;
+        font-family: Inter;
+        background: #F2EEE3;
+        border-radius: 38px;
+      }
+    }
+    .login {
+      background: var(--color-second);
+      padding: 0 10px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      margin-left: 4px;
+      border-radius: 38px;
+      text-transform: uppercase;
+      font: 500 10px/11px var(--font-main);
+      svg {
+        margin-left: 4px;
+        path {
+          fill: #fff;
+          transition: 0.2s;
+        }
+      }
+      &:hover {
+        background: var(--color-second-light);
+        color: var(--color-second);
+        svg path {
+          fill: var(--color-second)
+        }
+      }
+    }
+  }
+  .main-menu-button {
+    display: none;
+  }
+}
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 42px;
+  a {
+    background: var(--color-second-light);
+    border: 2px solid var(--color-second-light);
+    padding: 7px 10px;
+    border-radius: 38px;
+    font-size: 500 10px/11px var(--font-main);
+    letter-spacing: 0.03em;
+    text-decoration: none;
+    color: var(--color-dark);
+    &:hover {
+      border: 2px solid var(--color-second);
+      color: var(--color-second);
+    }
+    &.active {
+      background: var(--color-second);
+      color: var(--color-second-light);
+      border: 2px solid var(--color-second);
+    }
+  }
+}
+.marquee-container {
+  overflow: hidden;
+  margin-bottom: 12px;
+  .marquee-content {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    align-items: center;
+    li {
+      font-family: 500 14px/18px var(--font-main);
+      letter-spacing: -0.04em;
+      white-space: nowrap;
+    }
+  }
+}
+.portfolio {
+  padding-top: 12px;
+  border-top: 1px solid var(--color-main);
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  .item {
+    width: calc(50% - 12px);
+    padding-bottom: 48px;
+    box-sizing: border-box;
+    position: relative;
+    border-bottom: 1px solid var(--color-main);
+    &::before {
+      content:"";
+      position: absolute;
+      right: -12px;top: 0;bottom: 12px;
+      width: 1px;
+      background: var(--color-main);
+    }
+    img {
+      max-width: 100%;
+      margin-bottom: 16px;
+      display: block;
+    }
+    .data {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 24px;
+      .name {
+        font: 500 32px/30px var(--font-main);
+        letter-spacing: -0.06em;
+      }
+    }
+  }
+}
+footer {
+  background: var(--color-main);
+  padding: 24px 0 36px;
+  margin-top: 80px;
+  section {
+    display: flex;
+    gap: 12px;
+    .info {
+      max-width: 194px;
+    }
+    .contacts {
+      margin-left: 300px;
+      display: flex;
+      flex-direction: column;
+    }
+    p {
+      opacity: 0.65;
+    }
+    p, a {
+      color: #FFFBF0;
+      font: 500 12px/16px var(--font-main);
+      letter-spacing: -0.04em;
+      margin-bottom: 4px;
+    }
+    div {
+      display: flex;
+      flex-direction: column;
+      margin-top: 4px;
+      a {
+        font: 400 15px/19px var(--font-main);
+        letter-spacing: -0.04em;
+      }
+      & + p {
+        margin-top: auto;
+      }
+    }
+  }
+}
