@@ -1,5 +1,6 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     mode: 'development',
@@ -27,6 +28,10 @@ module.exports = {
             ]
           },
           {
+            test: /\.css$/,
+            use: ['style-loader', 'css-loader'],
+          },
+          {
             test: /\.(png|jpe?g|gif|svg)$/i,
             type: 'asset/resource',
             generator: {
@@ -40,6 +45,11 @@ module.exports = {
           filename: 'style.css', // Имя скомпилированного CSS файла
           chunkFilename: '[id].css',
           ignoreOrder: false,
+        }),
+        new CopyPlugin({
+          patterns: [
+            { from: 'node_modules/@splidejs/splide/dist/css/splide.min.css', to: '' },
+          ],
         }),
     ],
 };
