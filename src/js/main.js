@@ -8,9 +8,27 @@ if( marqueeElement ) {
         gap:        12, 
         speed:      50, 
         startVisible: true 
-    } );
+    })
 }
+if( document.getElementById('login-slider') ) {
+    const authGallery = new Splide( '#login-slider', {
+        perPage   : 1,
+        type      : 'fade',
+        rewind    : true,
+        pagination: false,
+        arrows    : false,
+        drag      : false
+    }).mount();
 
+    const gotoLinks = document.querySelectorAll('.js-goto-link')
+    gotoLinks.forEach(function(gotoLink) {
+        gotoLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            let page = this.dataset.page*1
+            authGallery.go(page);
+        });
+    });
+}
 if( document.getElementById('portfolio-gallery') ) {
     const mainGallery = new Splide( '#portfolio-gallery', {
         type      : 'slide',
@@ -19,7 +37,7 @@ if( document.getElementById('portfolio-gallery') ) {
         arrows    : false,
     })
     const thumbGallery = new Splide( '#portfolio-thumb-gallery', {
-        perPage: 6,
+        perPage   : 6,
         gap       : 12,
         rewind    : true,
         pagination: false,
