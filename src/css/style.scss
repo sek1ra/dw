@@ -124,13 +124,23 @@ section, header {
   padding-right: 12px;
   margin: 0 auto;
 }
-input {
+input, textarea {
   transition: 0.2s;
 }
 input[type=submit] {
   cursor: pointer;
 }
-input[type=text]:focus, input[type=email]:focus, input[type=password]:focus {
+input[type=text], input[type=email], input[type=password], textarea {
+  padding: 10px 17px;
+  font-family: Inter;
+  background: #F2EEE3;
+  border: none;
+  border-radius: 38px;
+}
+textarea {
+  border-radius: 18px;
+}
+input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, textarea:focus {
   box-shadow: 0 0 8px inset var(--color-second);
   border-color: var(--color-second);
   caret-color: var(--color-second);
@@ -255,11 +265,6 @@ header {
       input {
         font: 500 10px/11px var(--font-main);
         margin-right: 4px;
-        padding: 10px 17px;
-        font-family: Inter;
-        background: #F2EEE3;
-        border: none;
-        border-radius: 38px;
       }
       @media(max-width:550px) {
         display: none;
@@ -872,6 +877,12 @@ footer {
         display: flex;
         flex-direction: column;
         gap: 6px;
+        a {
+          color: var(--color-main);
+          &:hover {
+            color: var(--color-second)
+          }
+        }
       }
       input {
         background: var(--color-second);
@@ -889,5 +900,121 @@ footer {
         }
       }
     }
+  }
+}
+.profile-page {
+  padding-bottom: 80px;
+  form {
+    .fields {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 40px;
+      input, textarea {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      textarea {
+        height: 5em;
+      }
+      input[type=submit] {
+        padding: 12px;
+        border-radius: 38px;
+      }
+    }
+  }
+  .profile-title {
+    margin-bottom: 15px;
+    color: var(--color-dark);
+    opacity: 0.6;
+    text-decoration: underline;
+    display: block;
+    cursor: pointer;
+  }
+  .border-left {
+    border-left: 1px solid var(--color-main);
+    padding-left: 24px;
+    /*#main-info {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 40px;
+      input, textarea {
+        display: none;
+      }
+      .name {
+        font: 400 66px/1em var(--font-title);
+        letter-spacing: -0.04em;
+      }
+      .desc, .link {
+        font: 500 14px/18px var(--font-main);
+        letter-spacing: -0.04em;
+      }
+      label {
+        display: none;
+      }
+    }*/
+    #edit-main-info {
+      display: none;
+    }
+    .contacts {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      color: #C6C6C6;
+    }
+  }
+  .drop-area {
+    background: url(~/src/img/union-icon@3x.png) no-repeat center center #F2EEE3;
+    background-size: 104px 104px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 288px;
+    height: 288px;
+    border: 2px solid #F2EEE3;
+    transition: 0.2s;
+    svg {
+        width: 104px;
+        height: 104px;
+        transition: 0.2s;
+    }
+    &.loaded {
+      svg {
+        display: none;
+      }
+    }
+    &.highlight {
+      border: 2px dashed var(--color-second);
+      svg {
+        transform: scale(1.2);
+      }
+    }
+    img {
+      max-width: 260px;
+      max-height: 260px;
+    }    
+  }
+  .gallery-loader {
+    margin-top: 40px;
+    .drop-area {
+      width: 100%;
+    }
+  }
+  #galleryPreviews {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 12px;
+    img {
+        max-height: 109px;
+        border-radius: 8px;
+    }
+  }
+  .project-desc {
+    width: 60%;
+    margin-left: auto;
   }
 }

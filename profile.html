@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DW. Login</title>
+    <title>DW. Profile</title>
     <link rel="stylesheet" href="dist/style.css">
     <link rel="stylesheet" href="dist/splide.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Constantine&family=Inter:wght@400;700&display=swap">
@@ -54,54 +54,68 @@
 
         <main>
             <section>
-                <div class="login-page">
-                    <div id="login-slider" class="splide">
-                        <div class="splide__track">
-                            <ul class="splide__list">
-                                <li class="splide__slide">
-                                    <h2>Войти</h2>
-                                    <form action="" class="fields">
-                                        <div class="field">
-                                            <input type="text" name="login[email]" placeholder="E-mail">
-                                        </div>
-                                        <div class="field">
-                                            <input type="password" name="login[password]" placeholder="Пароль">
-                                        </div>
-                                        <div class="button">
-                                            <div class="links">
-                                                <a href="#" class="js-goto-link" data-page="2">Забыли пароль?</a>
-                                                <a href="#" class="js-goto-link" data-page="1">Зарегистрироваться</a>
-                                            </div>
-                                            <input type="submit" class="light-btn" value="Войти">
-                                        </div>
-                                    </form>
-                                </li>
-                                <li class="splide__slide">
-                                    <h2>Зарегистрироваться</h2>
-                                    <form action="" class="fields">
-                                        <div class="field">
-                                            <input type="text" name="login[email]" placeholder="E-mail">
-                                        </div>
-                                        <div class="button">
-                                            <a href="#" class="js-goto-link" data-page="0">Войти</a>
-                                            <input type="submit" class="light-btn" value="Зарегистрироваться">
-                                        </div>
-                                    </form>
-                                </li>
-                                <li class="splide__slide">
-                                    <h2>Восстановить пароль</h2>
-                                    <form action="" class="fields">
-                                        <div class="field">
-                                            <input type="text" name="recovery[email]" placeholder="E-mail">
-                                        </div>
-                                        <div class="button">
-                                            <a href="#" class="js-goto-link" data-page="0">Войти</a>
-                                            <input type="submit" class="light-btn" value="Восстановить">
-                                        </div>
-                                    </form>
-                                </li>
-                            </ul>
+                <div class="profile-page">
+                    <div class="cols">
+                        <div class="col">
+                            <label for="main-photo" class="profile-title">Загрузить фото</label>
+                            <div class="load-photo">
+                                <div class="drop-area">
+                                    <input class="js-file-elem" type="file" id="main-photo" accept="image/*" style="display:none">
+                                    <label for="main-photo">
+                                        <svg viewBox="0 0 104 104" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M58 5C58 2.23858 55.7614 0 53 0H51C48.2386 0 46 2.23858 46 5V41C46 43.7614 43.7614 46 41 46H5C2.23858 46 0 48.2386 0 51V53C0 55.7614 2.23858 58 5 58H41C43.7614 58 46 60.2386 46 63V99C46 101.761 48.2386 104 51 104H53C55.7614 104 58 101.761 58 99V63C58 60.2386 60.2386 58 63 58H99C101.761 58 104 55.7614 104 53V51C104 48.2386 101.761 46 99 46H63C60.2386 46 58 43.7614 58 41V5Z" fill="#E6E2D6"/>
+                                        </svg>
+                                    </label>
+                                    <div class="js-image-preview"></div>
+                                </div>
+                            </div>
                         </div>
+                        <div class="col border-left">
+                            <form action="">
+                                <!--<input type="checkbox" id="edit-main-info">-->
+                                <label for="edit-name" class="profile-title">Редактировать информацию</label>
+                                <div id="main-info" class="fields">
+                                    <!--<label for="edit-main-info" class="name">Константинов Константин</label>-->
+                                    <input type="text" name="" id="edit-name" value="Константинов Константин" placeholder="Введите имя">
+                                    <!--<label for="edit-main-info" class="desc">Введите описание о себе (до 100 символов)</label>-->
+                                    <textarea maxlength="100" name="" id="" cols="30" rows="10" placeholder="Введите описание о себе (до 100 символов)"></textarea>
+                                    <!--<label for="edit-main-info" class="link">Введите ссылку для кнопки “связаться” на telegramm или whats’app</label>-->
+                                    <input type="text" name="" id="" value="" placeholder="Введите ссылку для кнопки “связаться” на telegramm или whats’app">
+                                    <input type="submit" value="Сохранить">
+                                </div>
+
+                                <label class="profile-title">*Телефон и почта скрыты для внешнего просмотра</label>
+                                <div class="contacts">
+                                    <span>8 (929) 999-99-99</span>
+                                    <span>name@mail.ru</span>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="gallery-loader">
+                        <label for="gallery-photos" class="profile-title">Загрузить фото проекта (до 20 слайдов)</label>
+                        <div class="drop-area" data-imagepreview="galleryPreviews">
+                            <input class="js-file-elem" multiple type="file" id="gallery-photos" accept="image/*" style="display:none">
+                            <label for="main-photo">
+                                <svg viewBox="0 0 104 104" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M58 5C58 2.23858 55.7614 0 53 0H51C48.2386 0 46 2.23858 46 5V41C46 43.7614 43.7614 46 41 46H5C2.23858 46 0 48.2386 0 51V53C0 55.7614 2.23858 58 5 58H41C43.7614 58 46 60.2386 46 63V99C46 101.761 48.2386 104 51 104H53C55.7614 104 58 101.761 58 99V63C58 60.2386 60.2386 58 63 58H99C101.761 58 104 55.7614 104 53V51C104 48.2386 101.761 46 99 46H63C60.2386 46 58 43.7614 58 41V5Z" fill="#E6E2D6"/>
+                                </svg>
+                            </label>
+                        </div>
+                        <div id="galleryPreviews"></div>
+                    </div>
+
+                    <div class="project-desc">
+                        <form action="">
+                            <div class="fields">
+                                <input type="text" name="" value="" placeholder="Название проекта">
+                                <textarea maxlength="300" name="" id="" cols="40" rows="5" placeholder="Введите описание проекта (до 300 символов)"></textarea>
+                                <input type="text" name="" value="" placeholder="Имя клиента">
+                                <textarea maxlength="300" name="" id="" cols="40" rows="5" placeholder="Отзыв клиента (до 100 символов)"></textarea>
+                                <input type="submit" value="Сохранить">
+                            </div>
+                        </form>
                     </div>
                 </div>
             </section>
