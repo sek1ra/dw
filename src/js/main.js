@@ -1,5 +1,8 @@
 import marquee from 'vanilla-marquee'
 import Splide from '@splidejs/splide';
+import noUiSlider from 'nouislider';
+//import '@splidejs/splide/dist/css/splide.min.css';
+//import 'nouislider/dist/nouislider.min.css';
 
 const marqueeElement = document.getElementById('marquee')
 if( marqueeElement ) {
@@ -113,15 +116,17 @@ function handleFiles(files, dropArea) {
         const img = new Image();
         img.src = e.target.result;
         const imagePreview = dropArea.querySelector('.js-image-preview')
+        console.log( dropArea )
         if(imagePreview) {
-            imagePreview.innerHTML = '';
-            imagePreview.appendChild(img);
-            dropArea.classList.add('loaded');
+          imagePreview.innerHTML = '';
+          imagePreview.appendChild(img);
+          dropArea.classList.add('loaded');
         } else if(dropArea.dataset.imagepreview) {
-            const extImagePreview = document.getElementById(dropArea.dataset.imagepreview)
-            if(extImagePreview) {
-                extImagePreview.appendChild(img);
-            }
+          console.log('imagepreview')
+          const extImagePreview = document.getElementById(dropArea.dataset.imagepreview)
+          if(extImagePreview) {
+              extImagePreview.appendChild(img);
+          }
         }
       }
       reader.readAsDataURL(file);
@@ -129,11 +134,75 @@ function handleFiles(files, dropArea) {
   }
 }
 
-
-const filesElems = document.querySelectorAll('js-file-elem')
+const filesElems = document.querySelectorAll('.js-file-elem')
 filesElems.forEach( fileElem => {
     fileElem.addEventListener('change', function(e) {
         const files = this.files;
-        handleFiles(files, this);
+        console.log( files );
+        console.log( this.parentNode );
+        handleFiles(files, this.parentNode);
     });
 })
+
+const ranges = document.querySelectorAll('.js-range')
+if( ranges ) {
+  ranges.forEach( rangeItem => {
+    initRangeItem(rangeItem)
+  })
+}
+
+const addService = document.getElementById('js-add-profile-service')
+if( addService ) {
+  addService.addEventListener('click', function(e) {
+    e.preventDefault()
+    const row = document.querySelector(".profile-portfolio-price .row").cloneNode(true)
+    row.querySelector('textarea').value = ''
+    let rowsCount = document.querySelectorAll(".profile-portfolio-price .row").length
+    rowsCount++
+    if( rowsCount < 10 ) {
+      rowsCount = "0" + rowsCount
+    }
+    row.querySelector('.num').innerHTML = rowsCount
+    const newRangeItems = row.querySelectorAll('.js-range')
+    newRangeItems.forEach( rangeItem => {
+      rangeItem.querySelector('.noUi-base').remove()
+      initRangeItem(rangeItem)
+    })
+    const parent = document.querySelector(".profile-portfolio-price");
+    parent.insertBefore(row, addService.parentNode)
+  })
+}
+
+function formatNumber(number) {
+  var str = number.toString();
+  str = str.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ');
+
+  return str;
+}
+
+function initRangeItem( rangeItem ) {
+  let minVal = parseInt( rangeItem.dataset.min )
+  let maxVal = parseInt( rangeItem.dataset.max )
+  let minCurrVal = parseInt( rangeItem.dataset.currmin )
+  let maxCurrVal = parseInt( rangeItem.dataset.currmax )
+  let step = parseInt( rangeItem.dataset.step )
+  noUiSlider.create(rangeItem, {
+    start: [minCurrVal, maxCurrVal],
+    connect: true,
+    step: step,
+    range: {
+        'min': minVal,
+        'max': maxVal
+    }
+  })
+  rangeItem.noUiSlider.on('update', function (values, handle) {
+    this.target.nextElementSibling.querySelector('.js-data-min').value = formatNumber(parseInt(values[0]))
+    this.target.nextElementSibling.querySelector('.js-data-max').value = formatNumber(parseInt(values[1]))
+  });
+  rangeItem.nextElementSibling.querySelectorAll('input').forEach(function(input, handle) {
+    input.addEventListener('change', function () {
+      const val = parseInt(this.value.replace(/\s+/g, ''));
+      rangeItem.noUiSlider.setHandle(handle, val);
+    });
+  })
+}

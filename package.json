@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@splidejs/splide": "^4.1.4",
+    "nouislider": "^15.7.1",
     "vanilla-marquee": "^1.1.2"
   }
 }

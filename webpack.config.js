@@ -49,6 +49,7 @@ module.exports = {
         new CopyPlugin({
           patterns: [
             { from: 'node_modules/@splidejs/splide/dist/css/splide.min.css', to: '' },
+            { from: 'node_modules/nouislider/dist/nouislider.min.css', to: '' },
           ],
         }),
     ],
