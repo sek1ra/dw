@@ -1,3 +1,11 @@
+@font-face {
+  font-family: 'Constantine';
+  src: url('~/src/fonts/constantine.woff2') format('woff2'),
+      url('~/src/fonts/constantine.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
 /* Определение переменных */
 :root {
   --font-main: 'Inter', sans-serif;
@@ -160,7 +168,7 @@ input[type=text]:focus, input[type=email]:focus, input[type=password]:focus, tex
 }
 .light-btn {
   font: 500 10px/11px var(--font-main);
-  letter-spacing: -0.03em;
+  letter-spacing: 0.03em;
   padding: 7px 10px;
   border: 1px solid var(--color-main);
   border-radius: 38px;
@@ -205,11 +213,15 @@ header {
     align-items: center;
     svg {
       width: 75px;
+      margin-left: 0;
       @media(max-width:750px) {
         width: 90px;
       }
       @media(max-width:550px) {
         width: 120px;
+      }
+      @media(max-width:450px) {
+        width: 100px;
       }
     }
     span {
@@ -347,7 +359,8 @@ main.index {
     border: 2px solid var(--color-second-light);
     padding: 7px 10px;
     border-radius: 38px;
-    font-size: 500 10px/11px var(--font-main);
+    font: 500 10px/11px var(--font-main);
+    text-transform: uppercase;
     letter-spacing: 0.03em;
     color: var(--color-dark);
     &:hover {
@@ -542,6 +555,7 @@ footer {
     position: absolute;
     font: 500 10px/11px var(--font-main);
     gap: 4px;
+    letter-spacing: 0.01em;
     text-transform: uppercase;
     color: var(--color-main);
     margin-bottom: 28px;
@@ -598,6 +612,9 @@ footer {
   }
   h1 {
     text-align: left;
+    @media(max-width:700px) {
+      text-align: center;
+    }
   }
   .cols {
     padding-bottom: 60px;
@@ -738,69 +755,16 @@ footer {
   .row {
     display: grid;
     grid-template-columns: 100px 300px 1fr 180px 200px;
-    padding-bottom: 40px;
-    padding-top: 40px;
+    padding-bottom: 48px;
+    padding-top: 12px;
     border-top: 1px solid var(--color-main);
-    @media(max-width:1100px) {
-      grid-template-columns: 100px 300px 1fr;
-      grid-template-rows: auto auto; /* две строки */
-      .term, .price {
-        grid-row: 2;
-        grid-column: span 2;
-        margin-top: 24px;
-      }
-    }
-    @media(max-width:750px) {
-      grid-template-columns: 50px 1fr 1fr 1fr;
-      grid-template-rows: auto auto auto; /* две строки */
-      .num {
-        grid-row: 1;
-        grid-column: 1;
-      }
-      .name {
-        grid-row: 1;
-        grid-column: span 3;
-      }
-      .desc {
-        grid-row: 2;
-        grid-column: span 4;
-        margin-top: 24px;
-      }
-      .term, .price {
-        margin-top: 40px;
-        grid-row: 3;
-        grid-column: span 2;
-      }
-    }
-    @media(max-width:500px) {
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: auto auto auto auto;
-      .num {
-        grid-row: 1;
-        grid-column: span 2;
-        margin-bottom: 6px;
-      }
-      .name {
-        grid-row: 2;
-        grid-column: span 2;
-      }
-      .desc {
-        grid-row: 3;
-        grid-column: span 2;
-        margin-top: 24px;
-      }
-      .term, .price {
-        margin-top: 40px;
-        grid-row: 4;
-        grid-column: span 1;
-      }
-    }
     .num {
       font: 400 32px/30px var(--font-title);
     }
     .name {
       font: 500 32px/30px var(--font-main);
-      letter-spacing: -0.06em;      
+      letter-spacing: -0.06em;
+      padding-right: 40px;      
     }
     .desc {
       padding-left: 16px;
@@ -831,6 +795,95 @@ footer {
       input {
         width: calc(50% - 22px);
         text-align: center;
+      }
+    }
+    & > div {
+      padding-bottom: 24px;
+      @media(max-width:1100px) {
+        padding-bottom: 0;
+      }
+    }
+    @media(max-width:1100px) {
+      grid-template-columns: 100px 300px 1fr;
+      grid-template-rows: auto auto; /* две строки */
+      .term, .price {
+        grid-row: 2;
+        grid-column: span 2;
+        margin-top: 24px;
+      }
+    }
+    @media(max-width:750px) {
+      grid-template-columns: 50px 1fr 1fr 1fr;
+      grid-template-rows: auto auto auto; /* две строки */
+      border-top: none;
+      &:first-child {
+        border-top: 1px solid var(--color-main);
+        padding-top: 40px;
+      }
+      .num {
+        grid-row: 1;
+        grid-column: 1;
+        font: 400 24px/22px var(--font-title);
+      }
+      .name {
+        grid-row: 1;
+        grid-column: span 3;
+      }
+      .desc {
+        grid-row: 2;
+        grid-column: span 4;
+        margin-top: 24px;
+        border-left: none;
+        padding-left: 0;
+      }
+      .term, .price {
+        margin-top: 40px;
+        grid-row: 3;
+        grid-column: span 2;
+        border-top: 1px solid var(--color-main);
+        border-bottom: 1px solid var(--color-main);
+        padding-top: 6px;
+        padding-bottom: 6px;
+        border-left: none;
+        position: relative;
+        & svg {
+          display: none;
+        }
+      }
+      .term {
+        padding-left: 0;
+      }
+      .price::before {
+        content:"";
+        position: absolute;
+        left: 0;
+        top: 6px;
+        bottom: 6px;
+        width: 1px;
+        background-color: var(--color-main);
+      }
+    }
+    @media(max-width:500px) {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto auto auto;
+      .num {
+        grid-row: 1;
+        grid-column: span 2;
+        margin-bottom: 6px;
+      }
+      .name {
+        grid-row: 2;
+        grid-column: span 2;
+      }
+      .desc {
+        grid-row: 3;
+        grid-column: span 2;
+        margin-top: 24px;
+      }
+      .term, .price {
+        margin-top: 40px;
+        grid-row: 4;
+        grid-column: span 1;
       }
     }
   }
@@ -945,6 +998,8 @@ footer {
   border-bottom: 1px solid var(--color-main);
   padding: 40px 0;
   h2 {
+    padding-top: 12px;
+    letter-spacing: -0.03em;
     @media(max-width:600px) {
       font: 400 40px/1em var(--font-title);
     }
