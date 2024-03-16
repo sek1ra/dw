@@ -1,65 +1,63 @@
-import marquee from 'vanilla-marquee'
-import Splide from '@splidejs/splide';
-import noUiSlider from 'nouislider';
-//import '@splidejs/splide/dist/css/splide.min.css';
-//import 'nouislider/dist/nouislider.min.css';
-
 const marqueeElement = document.getElementById('marquee')
 if( marqueeElement ) {
-    new marquee( marqueeElement, {
-        duplicated: true,
-        gap:        12, 
-        speed:      50, 
-        startVisible: true 
+    import('vanilla-marquee').then(({ default: marquee }) => {
+        new marquee( marqueeElement, {
+            duplicated: true,
+            gap:        12, 
+            speed:      50, 
+            startVisible: true 
+        })
     })
 }
 if( document.getElementById('login-slider') ) {
-    const authGallery = new Splide( '#login-slider', {
-        perPage   : 1,
-        type      : 'fade',
-        rewind    : true,
-        pagination: false,
-        arrows    : false,
-        drag      : false
-    }).mount();
+    import('@splidejs/splide').then(({ default: Splide }) => {
+        const authGallery = new Splide( '#login-slider', {
+            perPage   : 1,
+            type      : 'fade',
+            rewind    : true,
+            pagination: false,
+            arrows    : false,
+            drag      : false
+        }).mount();
 
-    const gotoLinks = document.querySelectorAll('.js-goto-link')
-    gotoLinks.forEach(function(gotoLink) {
-        gotoLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            let page = this.dataset.page*1
-            authGallery.go(page);
+        const gotoLinks = document.querySelectorAll('.js-goto-link')
+        gotoLinks.forEach(function(gotoLink) {
+            gotoLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                let page = this.dataset.page*1
+                authGallery.go(page);
+            });
         });
-    });
+    })
 }
 if( document.getElementById('portfolio-gallery') ) {
-    const mainGallery = new Splide( '#portfolio-gallery', {
-        type      : 'slide',
-        rewind    : true,
-        pagination: false,
-        arrows    : false,
-    })
-    const thumbGallery = new Splide( '#portfolio-thumb-gallery', {
-        perPage   : 6,
-        gap       : 12,
-        rewind    : true,
-        pagination: false,
-        arrows: false,
-        isNavigation: true,
-        breakpoints: {
-            /*900: {
-                perPage: 4,
-                gap: 6,
-                padding: { left: 30, right: 30 }
-            },*/
-            600: {
-                gap: 4
+    import('@splidejs/splide').then(({ default: Splide }) => {
+        const mainGallery = new Splide( '#portfolio-gallery', {
+            type      : 'slide',
+            rewind    : true,
+            pagination: false,
+            arrows    : false,
+        })
+        const thumbGallery = new Splide( '#portfolio-thumb-gallery', {
+            perPage   : 6,
+            gap       : 12,
+            rewind    : true,
+            pagination: false,
+            arrows: false,
+            isNavigation: true,
+            breakpoints: {
+                1200: {
+                gap: 6
+                },
+                600: {
+                    gap: 2
+                }
             }
-        }
+        })
+        mainGallery.sync( thumbGallery );
+        mainGallery.mount();
+        thumbGallery.mount();
     })
-    mainGallery.sync( thumbGallery );
-    mainGallery.mount();
-    thumbGallery.mount();
 }
 
 const dropAreas = document.querySelectorAll('.drop-area');
@@ -146,9 +144,11 @@ filesElems.forEach( fileElem => {
 
 const ranges = document.querySelectorAll('.js-range')
 if( ranges ) {
-  ranges.forEach( rangeItem => {
-    initRangeItem(rangeItem)
-  })
+    import('nouislider').then(({ default: noUiSlider }) => {
+        ranges.forEach( rangeItem => {
+            initRangeItem(rangeItem)
+        })
+    })
 }
 
 const addService = document.getElementById('js-add-profile-service')
