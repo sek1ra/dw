@@ -580,20 +580,46 @@ main.index {
   justify-content: space-between;
   gap: 24px;
 }
-.portfolio .item .data .name {
-  font: 500 32px/30px var(--font-main);
-  letter-spacing: -0.06em;
-}
 @media (max-width: 550px) {
   .portfolio .item .data {
-    flex-direction: column;
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: 1fr auto;
     gap: 16px;
   }
   .portfolio .item .data a.light-btn {
     font-size: 13px;
     padding: 13px;
   }
+}
+.portfolio .item .data .name {
+  font: 500 32px/30px var(--font-main);
+  letter-spacing: -0.06em;
+}
+.portfolio .item .data .ratingWrapper {
+  display: inline-flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.portfolio .item .data .ratingWrapper .rating {
+  background: url(/local/templates/dw/dist/img/star.png) repeat-x left top;
+  background-size: 20px 20px;
+  width: 100px;
+  height: 20px;
+  position: relative;
+}
+.portfolio .item .data .ratingWrapper .rating .curRating {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  background: url(/local/templates/dw/dist/img/star-filled.png) repeat-x left top;
+  background-size: 20px 20px;
+}
+.portfolio .item .data .ratingWrapper .count {
+  position: relative;
+  font-size: 10px;
+  top: -8px;
+  margin-left: 2px;
 }
 .portfolio.light {
   padding-top: 0;
@@ -605,6 +631,13 @@ main.index {
 }
 .portfolio.light .item::before {
   display: none;
+}
+.portfolio .load-more {
+  width: 100%;
+  padding: 20px 40px;
+  margin-top: 40px;
+  text-align: center;
+  overflow: hidden;
 }
 
 footer {
@@ -786,7 +819,7 @@ footer section .column p {
   .portfolio-page .back {
     justify-content: space-between;
     font: 500 14px/15px var(--font-main);
-    margin-top: -60px;
+    margin-top: -20px;
     margin-bottom: 88px;
   }
 }
@@ -877,6 +910,53 @@ footer section .column p {
 }
 .portfolio-page #portfolio-thumb-gallery {
   margin-bottom: 90px;
+}
+.portfolio-page .rating {
+  position: absolute;
+  margin-top: 6px;
+}
+.portfolio-page .rating .setRating {
+  display: inline-flex;
+  align-items: flex-start;
+  position: relative;
+  background: url(/local/templates/dw/dist/img/star.png) repeat-x left center;
+  background-size: 30px 30px;
+}
+.portfolio-page .rating .setRating .curRating {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  background: url(/local/templates/dw/dist/img/star-filled.png) repeat-x left center;
+  background-size: 30px 30px;
+}
+.portfolio-page .rating .setRating .stars {
+  display: flex;
+  gap: 0;
+  width: 150px;
+  height: 30px;
+}
+.portfolio-page .rating .setRating .stars img {
+  width: 30px;
+  height: 30px;
+  opacity: 0;
+}
+.portfolio-page .rating .setRating .count {
+  left: 100%;
+  margin-left: 4px;
+  position: absolute;
+}
+.portfolio-page .rating .setRating:hover .curRating {
+  display: none;
+}
+.portfolio-page .rating .setRating:hover .stars img {
+  opacity: 1;
+}
+.portfolio-page .rating.disabled .stars img {
+  display: none;
+}
+.portfolio-page .rating.disabled .curRating {
+  display: block !important;
 }
 .portfolio-page .review {
   max-width: 560px;
@@ -1417,6 +1497,35 @@ footer section .column p {
   padding: 12px;
   border-radius: 38px;
 }
+.profile-page form .fields .checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 0;
+}
+.profile-page form .fields .checkboxes .checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.profile-page form .fields .checkboxes .checkbox label {
+  white-space: nowrap;
+}
+.profile-page form .fields .button {
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  align-items: center;
+}
+.profile-page form .fields .button input {
+  flex-grow: 1;
+}
+.profile-page form .fields .button a {
+  color: var(--font-main);
+}
+.profile-page form .fields .button a:hover {
+  color: var(--color-second);
+}
 .profile-page .profile-title {
   margin-bottom: 15px;
   color: var(--color-dark);
@@ -1577,9 +1686,9 @@ footer section .column p {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 40px;
-  height: 40px;
-  margin: -20px 0 0 -20px;
+  width: 30px;
+  height: 30px;
+  margin: -15px 0 0 -15px;
   border: 3px solid #ccc;
   border-radius: 50%;
   border-top-color: #000;

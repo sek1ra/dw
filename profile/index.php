@@ -17,15 +17,16 @@ if( !$arUser ) {
     LocalRedirect('/login/');
 }
 
+//Получаем все услуги
 $servicesFilter = array( 'IBLOCK_ID' => 6, 'ACTIVE' => 'Y' );
 $servicesItems = CIBlockElement::GetList( 
-    array('SORT' => 'ASC'), 
-    $servicesFilter, 
-    false, 
-    false, 
+    array('SORT' => 'ASC'),
+    $servicesFilter,
+    false,
+    false,
     array('ID', 'NAME')
 );
-
+//Сохраняем в массив для дальнейшего использования
 $serviceIds = [];
 $servicesData = [];
 while ($serviceItem = $servicesItems->GetNext()) {
@@ -33,9 +34,12 @@ while ($serviceItem = $servicesItems->GetNext()) {
     $servicesData[]=$serviceItem;
 }
 
-
-
 $projectElement = false;
+$servicesList = [];
+$currentProjectId = 0;
+$maxImagePosition = 0;
+
+//Проверяем задан ли проект
 if( !empty( $_REQUEST['projectid'] ) ) {
     $arSelect = Array(
         "ID", "NAME", "PROPERTY_USERID", "PROPERTY_GALLERY", "DETAIL_TEXT",
@@ -44,10 +48,18 @@ if( !empty( $_REQUEST['projectid'] ) ) {
     $arFilter = Array( "IBLOCK_ID" => 5, "ID" => intval( $_REQUEST['projectid'] ), "ACTIVE"=>"Y" );
     $res = CIBlockElement::GetList(Array(), $arFilter, false, Array("nPageSize"=>50), $arSelect);
     $projectElement = $res->GetNextElement();
+    //Если проект не принадлежит текущему пользователю
     if( $projectElement->fields['PROPERTY_USERID_VALUE'] != $USER->GetID() ) {
         LocalRedirect('/profile/');
     }
+
     $projectElement = $projectElement->fields;
+    $currentProjectId = $projectElement['ID'];
+
+    if( isset( $_REQUEST['delete'] ) ) {
+        CIBlockElement::Delete($currentProjectId);
+        LocalRedirect('/profile/');
+    }
 
     $res = CIBlockElement::GetProperty(
         5,
@@ -64,8 +76,21 @@ if( !empty( $_REQUEST['projectid'] ) ) {
             }
         }
     }
+
+    $res = CIBlockElement::GetProperty(
+        5,
+        $projectElement['ID'],
+        array(),
+        array("CODE" => "SERVICES")
+    );
+    while ($arProperty = $res->Fetch()) {
+        if ($arProperty['PROPERTY_TYPE'] == 'E' && $arProperty['VALUE']) {
+            $servicesList[]=$arProperty['VALUE'];
+        }
+    }
 }
 
+//Обрабатываем формы
 if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
     $APPLICATION->RestartBuffer();
     $allowedFileTypes = ['image/jpeg', 'image/png', 'image/gif'];
@@ -74,7 +99,12 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
     $resId = 0;
     $redirectId = 0;
 
+    //Обрабатываем форму проекта
     if( !empty($_POST['project_name']) ) {
+        $services = [];
+        foreach( $_POST['project_services'] as $serviceId ) {
+            $services[]=$serviceId;
+        }
         $fields = [
             'IBLOCK_ID' => 5,
             'NAME' => $_POST['project_name'],
@@ -83,6 +113,7 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
                 'USERID' => $USER->GetID(),
                 'CLIENT_NAME' => $_POST['project_client'],
                 'CLIENT_DESC' => $_POST['project_client_desc'],
+                'SERVICES'  => $services
             ],
         ];
         $element = new CIBlockElement();
@@ -91,22 +122,30 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
             $resId = $elementId;
         } else {
             $elementId = $element->Add($fields);
-            $resId = $redirectId = $elementId;
+            $currentProjectId = $resId = $redirectId = $elementId;
         }
     }
 
-    if( !empty( $_FILES['projectimages'] ) ) {
+    //Заданы фотографии проекта
+    if( !empty( $_FILES['projectimages'] ) && $currentProjectId > 0 ) {
         $filesArray = $_FILES['projectimages'];
         if (!empty($filesArray['tmp_name'])) {
             $filesCount = count($filesArray['tmp_name']);
 
+            $imgIds = [];
             for ($i = 0; $i < $filesCount; $i++) {
                 $fileArray = CFile::MakeFileArray($filesArray['tmp_name'][$i]);
                 $fileArray['name'] = $filesArray['name'][$i];
                 $fileId = CFile::SaveFile($fileArray, "usersprojects");
                 if ($fileId) {
-                    CIBlockElement::SetPropertyValueCode($projectElement['ID'], 'GALLERY', [$fileId]);
+                    $imgIds[]=$fileId;
+                    //CIBlockElement::SetPropertyValueCode($currentProjectId, 'GALLERY', [$fileId]);
+                    //$maxImagePosition += 10;
+                    //$orderValue = ($maxImagePosition + 1) * $galleryOrder; // Устанавливаем увеличивающийся порядок
                 }
+            }
+            if( !empty( $imgIds ) ) {
+                CIBlockElement::SetPropertyValues($currentProjectId, 5, $imgIds, 'GALLERY');
             }
         }
     }
@@ -315,6 +354,24 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
                             name="project_desc" 
                             placeholder="Введите описание проекта (до 300 символов)"
                             ><?=$projectElement['DETAIL_TEXT']?></textarea>
+                        <div class="checkboxes">
+                            <?
+                            foreach( $servicesData as $service ) {
+                            ?>
+                            <div class="checkbox">
+                                <input 
+                                    type="checkbox" 
+                                    name="project_services[<?=$service['ID']?>]" 
+                                    id="profCh<?=$service['ID']?>" 
+                                    value="<?=$service['ID']?>"
+                                    <?=( in_array( $service['ID'], $servicesList ) ? 'checked="checked"' : '' )?>
+                                >
+                                <label for="profCh<?=$service['ID']?>"><?=$service['NAME']?></label>
+                            </div>
+                            <?
+                            }
+                            ?>
+                        </div>
                         <input 
                             type="text" 
                             name="project_client" 
@@ -326,7 +383,17 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
                             name="project_client_desc" 
                             placeholder="Отзыв клиента (до 100 символов)"
                             ><?=$projectElement['PROPERTY_CLIENT_DESC_VALUE']?></textarea>
-                        <input type="submit" value="Сохранить">
+
+                        <div class="button">
+                            <input type="submit" value="Сохранить">
+                            <?
+                            if( $currentProjectId ) {
+                            ?>
+                            <a onclick="return confirm('Действительно удалить проект?')" href="/profile/?projectid=<?=$currentProjectId?>&delete">удалить&nbsp;проект</a>
+                            <?
+                            }
+                            ?>
+                        </div>
                     </div>
                 </div>
             </form>

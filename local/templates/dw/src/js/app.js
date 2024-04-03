@@ -263,6 +263,12 @@ document.addEventListener('DOMContentLoaded', function() {
           if( response.redirectid ) {
             window.history.pushState(null, null, '/profile/?projectid='+response.redirectid);
           }
+          if( response.resid ) {
+            const buttonWrapper = document.querySelector(".project-desc .button")
+            if( buttonWrapper.querySelector("a").length == 0 ) {
+              buttonWrapper.append('<a href="/profile/?projectid='+response.resid+'&delete">удалить&nbsp;проект</a>');
+            }
+          }
         } else {
           console.error('Request failed. Status: ' + xhr.status);
         }
@@ -275,4 +281,120 @@ document.addEventListener('DOMContentLoaded', function() {
       xhr.send(formData);
     })
   })
-})
+
+  document.addEventListener('click', function(event){
+      if (event.target.classList.contains('load-more')) {
+        event.preventDefault();
+        if (event.target.classList.contains('loading')) {
+          return;
+        }
+        event.target.classList.add('loading')
+        var targetContainer = document.querySelector('.portfolio'),
+            url = event.target.getAttribute('data-url');
+ 
+        if (url !== null) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', url, true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var response = xhr.responseText;
+                    var parser = new DOMParser();
+                    var doc = parser.parseFromString(response, 'text/html');
+                    var elements = doc.querySelectorAll('.item'); // Ищем элементы
+                    var pagination = doc.querySelector('.load-more'); // Ищем навигацию
+
+                    // Удаляем старую навигацию
+                    var oldLoadMore = document.querySelector('.load-more');
+                    if (oldLoadMore) {
+                        oldLoadMore.parentNode.removeChild(oldLoadMore);
+                    }
+
+                    // Добавляем посты в конец контейнера
+                    elements.forEach(function(element){
+                        targetContainer.appendChild(element);
+                    });
+
+                    // Добавляем навигацию следом
+                    if (pagination) {
+                        targetContainer.appendChild(pagination);
+                    }
+                }
+            };
+            xhr.send();
+        }
+      }
+  });
+});
+
+const rating = document.getElementById("ratingWrapper")
+if( rating && !rating.classList.contains("disabled") ) {
+  function handleMouseEnter(e) {
+    e.stopPropagation();
+    let indx = parseInt(this.dataset.index);
+    for (let i = 1; i <= 5; i++) {
+      let img = document.querySelector(".setRating img:nth-child(" + i + ")");
+      if (i <= indx) {
+          img.src = img.dataset.full;
+      } else {
+          img.src = img.dataset.empty;
+      }
+    }
+  }
+
+  function handleClick() {
+    document.getElementById("currentRating").value = parseInt(this.dataset.index);
+
+    var formData = new FormData();
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '', true);
+
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        const response = JSON.parse(xhr.responseText);
+        if( !response.error ) {
+          document.querySelector('.setRating .curRating').style.width = ( response.value * 100 / 5 )+'%';
+          document.querySelector('.setRating .count').innerHTML = response.count
+        }
+      } else {
+        console.error('Request failed. Status: ' + xhr.status);
+      }
+    }
+    xhr.onerror = function() {
+        console.error('Request failed. Network error.');
+    }
+    formData.append('rating', this.dataset.index);
+    formData.append('postid', document.getElementById('postid').value);
+    xhr.send(formData);
+  }
+
+  function handleMouseLeave(e) {
+    e.stopPropagation();
+    let indx = parseInt(document.getElementById("currentRating").value);
+    
+    for (let i = 1; i <= 5; i++) {
+      let img = document.querySelector(".stars img:nth-child(" + i + ")");
+      if (i <= indx) {
+          img.src = img.dataset.full;
+      } else {
+          img.src = img.dataset.empty;
+      }
+    }
+  }
+
+  document.querySelectorAll(".stars img").forEach(function(img) {
+    img.addEventListener("mouseenter", handleMouseEnter);
+    img.addEventListener("click", handleClick);
+  })
+
+  document.querySelector(".stars").addEventListener("mouseleave", handleMouseLeave);
+
+  let indx = parseInt(document.getElementById("currentRating").value);
+  for (let i = 1; i <= 5; i++) {
+    let img = document.querySelector(".stars img:nth-child(" + i + ")");
+    if (i <= indx) {
+        img.src = img.dataset.full;
+    } else {
+        img.src = img.dataset.empty;
+    }
+  }
+}

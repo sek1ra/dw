@@ -1,25 +1,83 @@
 <?
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
+use Bitrix\Main\Loader;
+Loader::includeModule('iblock');
 $APPLICATION->SetTitle("Design Wonderland");
+
+if( !empty( $_POST['postid'] ) && !empty( $_POST['rating'] ) && is_numeric( $_POST['postid'] ) && is_numeric( $_POST['rating'] ) ) {
+	$APPLICATION->RestartBuffer();
+	global $USER;
+	if (!$USER->IsAuthorized()) {
+		echo json_encode( ['error' => 'not auth'] );
+		die;		
+	}
+
+	//за себя голосовать нельзя
+	$projectProps = CIBlockElement::GetProperty( 
+		5, $_POST['postid'], 
+		array("sort" => "asc"), 
+		Array("CODE"=>"USERID")
+	);
+	if ($projectProp = $projectProps->Fetch()) {
+		$projectUserId = $projectProp['VALUE'];
+		if( $USER->GetID() == $projectUserId ) {
+			echo json_encode( ['error' => 'nonono'] );
+			die;
+		}
+	} else {
+		echo json_encode( ['error' => 'smthg wrong'] );
+		die;
+	}
+
+	//Сохраняем голос
+	$fields = [
+		'IBLOCK_ID' => 8,
+		'NAME' => $_POST['postid'].'-'.$USER->GetID(),
+		'PROPERTY_VALUES' => [
+			'USERID' => $USER->GetID(),
+			'PROJECT' => $_POST['postid'],
+			'RATING' => $_POST['rating'],
+		],
+	];
+	$element = new CIBlockElement();
+
+	//проверяем голосовал или нет
+	$arFilter = array(
+		'IBLOCK_ID' => 8,
+		'PROPERTY_USER_VALUE' => $USER->GetID(),
+		'PROPERTY_PROJECT_VALUE' => $_POST['postid'],
+	);
+	$rsItems = CIBlockElement::GetList( array(), $arFilter, false, false, array('ID') );
+	$count = $rsItems->SelectedRowsCount();
+	if( $count > 0 ) {
+		$arItem = $rsItems->Fetch();
+		$element->Update($arItem['ID'], $fields);
+	} else {
+		$element->Add($fields);
+	}
+	$ratingResult = calcProjectRating($_POST['postid']);
+
+	//Сохраняем рейтинг у проекта
+	CIBlockElement::SetPropertyValueCode($_POST['postid'], "RATING", $ratingResult['value']);
+	CIBlockElement::SetPropertyValueCode($_POST['postid'], "VOTES_COUNT", $ratingResult['count']);
+
+	echo json_encode( $ratingResult );
+	die;
+}
 ?>
-<main class="index"> 
-    <section>
-        <h1>Портфолио студентов</h1>
-        <div class="tags">
-        <a href="#" class="active">Все</a> <a href="#">Фирменный стиль</a> <a href="#">Фир стиль соц сетей</a> <a href="#">Дизайн инсталляций</a> <a href="#">Графический дизайн</a>
-        </div>
-    </section>
-    <div class="marquee-container" id="marquee">
-        <div class="marquee-content">
-            *Design Wonderland вошла в ТОП-3 школы по версии GetCourse в категории «Обучение профессиям по всей России» *Design Wonderland вошла в ТОП-3 школы по версии GetCourse в категории «Обучение профессиям по всей России» <br>
-        </div>
-    </div>
+
 
     <?
+	if( !empty( $_REQUEST['filter'] ) ) {
+		$GLOBALS['arrFilter'] = Array( "PROPERTY_SERVICES" => Array( $_REQUEST['filter'] ) );
+	}
+
     $APPLICATION->IncludeComponent(
 	"bitrix:news", 
 	"template1", 
 	array(
+		"USE_FILTER" => "Y",
+		"FILTER_NAME" => "arrFilter",
 		"ADD_ELEMENT_CHAIN" => "N",
 		"ADD_SECTIONS_CHAIN" => "N",
 		"AJAX_MODE" => "N",
@@ -72,13 +130,13 @@ $APPLICATION->SetTitle("Design Wonderland");
 		"MESSAGE_404" => "",
 		"META_DESCRIPTION" => "-",
 		"META_KEYWORDS" => "-",
-		"NEWS_COUNT" => "20",
+		"NEWS_COUNT" => "10",
 		"PAGER_BASE_LINK_ENABLE" => "N",
 		"PAGER_DESC_NUMBERING" => "N",
 		"PAGER_DESC_NUMBERING_CACHE_TIME" => "36000",
 		"PAGER_SHOW_ALL" => "N",
 		"PAGER_SHOW_ALWAYS" => "N",
-		"PAGER_TEMPLATE" => ".default",
+		"PAGER_TEMPLATE" => "showmore",
 		"PAGER_TITLE" => "Новости",
 		"PREVIEW_TRUNCATE_LEN" => "",
 		"SEF_MODE" => "Y",
@@ -86,13 +144,12 @@ $APPLICATION->SetTitle("Design Wonderland");
 		"SET_STATUS_404" => "N",
 		"SET_TITLE" => "N",
 		"SHOW_404" => "N",
-		"SORT_BY1" => "ACTIVE_FROM",
+		"SORT_BY1" => "PROPERTY_RATING",
 		"SORT_BY2" => "SORT",
 		"SORT_ORDER1" => "DESC",
 		"SORT_ORDER2" => "ASC",
 		"STRICT_SECTION_CHECK" => "N",
 		"USE_CATEGORIES" => "N",
-		"USE_FILTER" => "N",
 		"USE_PERMISSIONS" => "N",
 		"USE_RATING" => "N",
 		"USE_RSS" => "N",
@@ -100,6 +157,14 @@ $APPLICATION->SetTitle("Design Wonderland");
 		"USE_SHARE" => "N",
 		"COMPONENT_TEMPLATE" => "template1",
 		"SEF_FOLDER" => "/projects/",
+		"FILTER_FIELD_CODE" => array(
+			0 => "",
+			1 => "",
+		),
+		"FILTER_PROPERTY_CODE" => array(
+			0 => "",
+			1 => "",
+		),
 		"SEF_URL_TEMPLATES" => array(
 			"news" => "/projects/",
 			"section" => "/projects/",
@@ -108,6 +173,5 @@ $APPLICATION->SetTitle("Design Wonderland");
 	),
 	false
 );?>
-</main>
     
 <?require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");?>

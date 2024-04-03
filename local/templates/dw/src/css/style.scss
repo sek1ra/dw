@@ -497,17 +497,41 @@ main.index {
       align-items: center;
       justify-content: space-between;
       gap: 24px;
-      .name {
-        font: 500 32px/30px var(--font-main);
-        letter-spacing: -0.06em;
-      }
       @media(max-width:550px) {
-        flex-direction: column;
-        align-items: flex-start;
+        display: grid;
+        grid-template-columns: 1fr auto;
         gap: 16px;
         a.light-btn {
           font-size: 13px;
           padding: 13px;
+        }
+      }
+      .name {
+        font: 500 32px/30px var(--font-main);
+        letter-spacing: -0.06em;
+      }
+      .ratingWrapper {
+        display: inline-flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        .rating {
+          background: url(../img/star.png) repeat-x left top;
+          background-size: 20px 20px;
+          width: 100px;
+          height: 20px;
+          position: relative;
+          .curRating {
+            position: absolute;
+            top: 0;bottom: 0;left: 0;
+            background: url(../img/star-filled.png) repeat-x left top;
+            background-size: 20px 20px;
+          }
+        }
+        .count {
+          position: relative;
+          font-size: 10px;
+          top:-8px;
+          margin-left: 2px;
         }
       }
     }
@@ -522,6 +546,13 @@ main.index {
         display: none;
       }
     }
+  }
+  .load-more {
+    width: 100%;
+    padding: 20px 40px;
+    margin-top: 40px;
+    text-align: center;
+    overflow: hidden;
   }
 }
 footer {
@@ -678,7 +709,7 @@ footer {
     @media(max-width:550px) {
       justify-content: space-between;
       font: 500 14px/15px var(--font-main);
-      margin-top: -60px;
+      margin-top: -20px;
       margin-bottom: 88px;
     }
   }
@@ -757,6 +788,55 @@ footer {
   }
   #portfolio-thumb-gallery {
     margin-bottom: 90px;
+  }
+  .rating {
+    position: absolute;
+    margin-top: 6px;
+    .setRating {
+      display: inline-flex;
+      align-items: flex-start;
+      position: relative;
+      background: url(../img/star.png) repeat-x left center;
+      background-size: 30px 30px;
+      .curRating {
+        position: absolute;
+        top: 0;bottom: 0;left: 0;
+        background: url(../img/star-filled.png) repeat-x left center;
+        background-size: 30px 30px;
+      }
+      .stars {
+        display: flex;
+        gap: 0;
+        width: 150px;
+        height: 30px;
+        img {
+          width: 30px;
+          height: 30px;
+          opacity: 0;
+        }
+      }
+      .count {
+        left: 100%;
+        margin-left: 4px;
+        position: absolute;
+      }
+      &:hover {
+        .curRating {
+          display: none;
+        }
+        .stars img {
+          opacity: 1;
+        }
+      }
+    }
+    &.disabled {
+      .stars img {
+        display: none;
+      }
+      .curRating {
+        display: block !important;
+      }
+    }
   }
   .review {
     max-width: 560px;
@@ -1251,6 +1331,35 @@ footer {
         padding: 12px;
         border-radius: 38px;
       }
+      .checkboxes {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 12px 0;
+        .checkbox {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          label {
+            white-space: nowrap;
+          }
+        }
+      }
+      .button {
+        display: flex;
+        gap: 16px;
+        justify-content: space-between;
+        align-items: center;
+        input {
+          flex-grow: 1;
+        }
+        a {
+          color: var(--font-main);
+          &:hover {
+            color: var(--color-second);
+          }
+        }
+      }
     }
   }
   .profile-title {
@@ -1415,9 +1524,9 @@ footer {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 40px;
-    height: 40px;
-    margin: -20px 0 0 -20px;
+    width: 30px;
+    height: 30px;
+    margin: -15px 0 0 -15px;
     border: 3px solid #ccc;
     border-radius: 50%;
     border-top-color: #000;
