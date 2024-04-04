@@ -205,7 +205,7 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
         //удаляем все услуги пользователя
         $arFilter = array(
             'IBLOCK_ID' => 7,
-            'PROPERTY_USER_VALUE' => $USER->GetID()
+            'PROPERTY_USER' => $USER->GetID()
         );
         $rsItems = CIBlockElement::GetList( array(), $arFilter, false, false, array('ID') );
         while ($arItem = $rsItems->Fetch()) {
@@ -403,12 +403,16 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
         <section>
             <h2>Услуги</h2>
             <?php
-            $userServicesFilter = array( 'IBLOCK_ID' => 7, 'ACTIVE' => 'Y', 'PROPERTY_USER_VALUE' => $USER->GetID() );
-            $userServicesItems = CIBlockElement::GetList( 
+            $userServicesFilter = array( 
+                'IBLOCK_ID' => 7,
+                'ACTIVE' => 'Y',
+                'PROPERTY_USER' => $USER->GetID()
+            );
+            $userServicesItems = CIBlockElement::GetList(
                 array('SORT' => 'ASC'),
-                $userServicesFilter, 
-                false, 
-                false, 
+                $userServicesFilter,
+                false,
+                false,
                 array(
                     'ID', 'NAME', 'PROPERTY_SERVICE', 'PROPERTY_DAYSMIN', 'PROPERTY_DAYSMAX',
                     'PROPERTY_PRICEMIN', 'PROPERTY_PRICEMAX', 'DETAIL_TEXT'
@@ -522,7 +526,7 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
             $projectsFilter = array( 
                 'IBLOCK_ID' => 5, 
                 'ACTIVE' => 'Y',
-                'PROPERTY_USERID_VALUE' => $USER->GetID(),
+                'PROPERTY_USERID' => $USER->GetID(),
                 '!ID' => Array( $projectElement['ID'] )
             );
             $projectsItems = CIBlockElement::GetList( 
