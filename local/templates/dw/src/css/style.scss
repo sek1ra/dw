@@ -479,6 +479,7 @@ main.index {
       background: #f2eee3;
       flex-grow: 1;
       border-radius: 8px;
+      min-height: 240px;
       svg {
         width: 104px;height: 104px;
       }
@@ -744,7 +745,7 @@ footer {
   }
   .text {
     margin-bottom: 38px;
-    max-width: 310px;
+    /*max-width: 310px;*/
     @media(max-width:700px) {
       margin-bottom: 30px;
     }
@@ -860,7 +861,7 @@ footer {
       }
     }
     .desc {
-      max-width: 350px;
+      /*max-width: 350px;*/
       margin-bottom: 48px;
       @media(max-width:550px) {
         margin-bottom: 75px;
@@ -873,7 +874,7 @@ footer {
         flex-direction: column-reverse;
       }
       .text {
-        max-width: 290px;
+        /*max-width: 290px;*/
         font-size: 14px;
         @media(max-width:550px) {
           margin-top: 22px;

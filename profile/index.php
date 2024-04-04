@@ -286,13 +286,13 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
                     </div>
                 </div>
                 <div class="col border-left">
-                    <form action="" class="profileform">
+                    <form action="" class="profileform" data-parsley-validate>
                         <label for="edit-name" class="profile-title">Редактировать информацию</label>
                         <div id="main-info" class="fields">
                             <input type="text" name="profilename" id="edit-name" value="<?=(!empty($arUser['NAME']) ? $arUser['NAME'] : '')?>" placeholder="Введите имя">
                             <input type="text" name="profilesurname" id="edit-surname" value="<?=(!empty($arUser['LAST_NAME']) ? $arUser['LAST_NAME'] : '')?>" placeholder="Введите фамилию">
                             <textarea maxlength="100" name="profiledescription" id="" placeholder="Введите описание о себе (до 100 символов)"><?=(!empty($arUser['WORK_NOTES']) ? $arUser['WORK_NOTES'] : '')?></textarea>
-                            <input type="text" name="profilecontacts" id="" value="<?=(!empty($arUser['WORK_PHONE']) ? $arUser['WORK_PHONE'] : '')?>" placeholder="Введите ссылку для кнопки “связаться” на telegramm или whats’app">
+                            <input required data-parsley-required-message="Введите ваши контакты" type="text" name="profilecontacts" id="" value="<?=(!empty($arUser['WORK_PHONE']) ? $arUser['WORK_PHONE'] : '')?>" placeholder="Введите ссылку для кнопки “связаться” на telegramm или whats’app">
                             <input type="submit" value="Сохранить">
                         </div>
 
