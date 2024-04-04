@@ -354,6 +354,7 @@ if( rating && !rating.classList.contains("disabled") ) {
         if( !response.error ) {
           document.querySelector('.setRating .curRating').style.width = ( response.value * 100 / 5 )+'%';
           document.querySelector('.setRating .count').innerHTML = response.count
+          document.getElementById("ratingWrapper").classList.add("disabled")
         }
       } else {
         console.error('Request failed. Status: ' + xhr.status);

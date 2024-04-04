@@ -33,7 +33,7 @@ $arUser = $rsUser->Fetch();
 							$arUser['PERSONAL_PHOTO'], 
 							array('width' => 400, 'height' => 400), 
 							BX_RESIZE_IMAGE_EXACT,
-							true
+							false
 						);
 						?>
 						<img src="<?=$resizedUserImage['src']?>" alt="">
@@ -105,7 +105,24 @@ $arUser = $rsUser->Fetch();
 					$currRating = $arResult['PROPERTIES']['RATING']['VALUE'];
 				}
 			?>
-			<div id="ratingWrapper" class="rating<?=( $arResult['PROPERTIES']['USERID']['VALUE'] == $USER->GetID() ? ' disabled' : '' )?>">
+			<?
+			$addedClass = '';
+			//если свой проект
+			if( $arResult['PROPERTIES']['USERID']['VALUE'] == $USER->GetID() ) {
+				$addedClass = ' disabled';
+			}
+			$arFilter = array(
+				'IBLOCK_ID' => 8,
+				'PROPERTY_USER' => $USER->GetID(),
+				'PROPERTY_PROJECT' => $arResult['ID'],
+			);
+			$rsItems = CIBlockElement::GetList( array(), $arFilter, false, false, array('ID') );
+			$count = $rsItems->SelectedRowsCount();
+			if( $count > 0 ) {
+				$addedClass = ' disabled';
+			}
+			?>
+			<div id="ratingWrapper" class="rating<?=$addedClass?>">
 				<div class="setRating">
 					<span class="curRating" style="width: <?=($currRating*100/5)?>%"></span>
 					<div class="stars">
@@ -282,7 +299,6 @@ $arUser = $rsUser->Fetch();
                         BX_RESIZE_IMAGE_EXACT,
                         true
                     );
-                    
                 ?>
 				<div class="item">
 					<a href="<?=$projectItem['DETAIL_PAGE_URL']?>" class="img">

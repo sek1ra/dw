@@ -42,16 +42,17 @@ if( !empty( $_POST['postid'] ) && !empty( $_POST['rating'] ) && is_numeric( $_PO
 	$element = new CIBlockElement();
 
 	//проверяем голосовал или нет
+	//переголосовывать нельзя!
 	$arFilter = array(
 		'IBLOCK_ID' => 8,
-		'PROPERTY_USER_VALUE' => $USER->GetID(),
-		'PROPERTY_PROJECT_VALUE' => $_POST['postid'],
+		'PROPERTY_USER' => $USER->GetID(),
+		'PROPERTY_PROJECT' => $_POST['postid'],
 	);
 	$rsItems = CIBlockElement::GetList( array(), $arFilter, false, false, array('ID') );
 	$count = $rsItems->SelectedRowsCount();
 	if( $count > 0 ) {
-		$arItem = $rsItems->Fetch();
-		$element->Update($arItem['ID'], $fields);
+		//$arItem = $rsItems->Fetch();
+		//$element->Update($arItem['ID'], $fields);
 	} else {
 		$element->Add($fields);
 	}
