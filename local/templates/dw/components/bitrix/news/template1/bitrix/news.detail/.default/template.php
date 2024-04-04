@@ -264,7 +264,7 @@ $arUser = $rsUser->Fetch();
             $projectsFilter = array( 
                 'IBLOCK_ID' => 5, 
                 'ACTIVE' => 'Y',
-                'PROPERTY_USERID' => $USER->GetID(),
+                'PROPERTY_USERID' => $arResult['PROPERTIES']['USERID']['VALUE'],
                 '!ID' => Array( $arResult['ID'] )
             );
             $projectsItems = CIBlockElement::GetList( 
