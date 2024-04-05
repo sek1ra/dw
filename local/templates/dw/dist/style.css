@@ -363,6 +363,27 @@ header .controls .login span {
     display: none;
   }
 }
+header .controls .login span.filled {
+  max-width: 60px;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+}
+header .controls .login span.filled::before, header .controls .login span.filled::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 40px;
+  background: linear-gradient(to right, transparent, var(--color-second));
+  transition: 0.2s;
+  z-index: 2;
+}
+header .controls .login span.filled::after {
+  background: linear-gradient(to right, transparent, var(--color-second-light));
+  opacity: 0;
+}
 header .controls .login svg {
   margin-left: 4px;
   width: 14px;
@@ -391,6 +412,12 @@ header .controls .login:hover span {
 }
 header .controls .login:hover svg path {
   fill: var(--color-second);
+}
+header .controls .login:hover .filled::before {
+  opacity: 0;
+}
+header .controls .login:hover .filled::after {
+  opacity: 1;
 }
 header .main-menu-button {
   display: none;
@@ -558,7 +585,7 @@ main.index {
   background: #f2eee3;
   flex-grow: 1;
   border-radius: 8px;
-  min-height: 240px;
+  min-height: 200px;
 }
 .portfolio .item .add svg {
   width: 104px;
@@ -1480,6 +1507,22 @@ footer section .column p {
 .profile-page {
   padding-bottom: 80px;
 }
+.profile-page .title-wrapper {
+  position: relative;
+}
+.profile-page .title-wrapper .links {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+}
+.profile-page .title-wrapper .links a {
+  color: var(--color-dark);
+}
 .profile-page form .fields {
   display: flex;
   flex-direction: column;
@@ -1532,7 +1575,7 @@ footer section .column p {
   color: var(--color-dark);
   opacity: 0.6;
   text-decoration: underline;
-  display: block;
+  display: inline-block;
   cursor: pointer;
 }
 @media (max-width: 850px) {
@@ -1715,4 +1758,48 @@ footer section .column p {
   100% {
     transform: rotate(360deg);
   }
+}
+.window {
+  display: none;
+}
+.window.activewindow {
+  z-index: 100;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: #FFFBF1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.window.activewindow .window-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.window.activewindow .window-wrapper label {
+  max-width: 360px;
+  font-size: 18px;
+  text-align: center;
+}
+.window.activewindow .window-wrapper .links {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+.window.activewindow .window-wrapper .links a {
+  padding: 8px 26px;
+  border-radius: 50px;
+  background: #F0F0F0;
+  color: #1E1E1E;
+}
+.window.activewindow .window-wrapper .links a.blue {
+  background: var(--color-second);
+  color: #fff;
+}
+.window.activewindow .window-wrapper .links a.red {
+  background: #FF4848;
+  color: #fff;
 }

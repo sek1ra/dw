@@ -263,6 +263,9 @@ document.addEventListener('DOMContentLoaded', function() {
           if( response.redirectid ) {
             window.history.pushState(null, null, '/profile/?projectid='+response.redirectid);
           }
+          if( response.profileimage ) {
+            document.querySelector(".js-image-preview img").src = response.profileimage
+          }
           if( response.resid ) {
             const buttonWrapper = document.querySelector(".project-desc .button")
             if( buttonWrapper.querySelector("a").length == 0 ) {
@@ -399,3 +402,22 @@ if( rating && !rating.classList.contains("disabled") ) {
     }
   }
 }
+
+const showWindowLink = document.querySelectorAll(".showwindow")
+showWindowLink.forEach(element => {
+  element.addEventListener('click', function(e) {
+    e.preventDefault()
+    document.getElementById(e.target.dataset.windowname).classList.add("activewindow")
+  })
+})
+
+const windowLinks = document.querySelectorAll(".window-wrapper .links a")
+windowLinks.forEach(element => {
+  element.addEventListener('click', function(e) {
+    if( e.target.classList.contains("accept") ) {
+      return true
+    }
+    e.preventDefault()
+    document.querySelector(".activewindow").classList.remove("activewindow")
+  })
+})

@@ -31,7 +31,10 @@ $APPLICATION->SetTitle("Вход на сайт");
 							$APPLICATION->IncludeComponent(
 								"bitrix:system.auth.authorize",
 								"",
-								array()
+								array(
+									"SHOW_ERRORS" => "Y",
+									'AUTH_RESULT' => $APPLICATION->arAuthResult
+								)
 							);
 							?>
 						</li>
@@ -51,6 +54,7 @@ $APPLICATION->SetTitle("Вход на сайт");
 									"SET_TITLE" => "Y", 
 									"USER_PROPERTY" => Array(), 
 									"SEF_FOLDER" => "/", 
+									"SHOW_ERRORS" => "Y",
 									"VARIABLE_ALIASES" => Array(),
 									'AUTH_RESULT' => $APPLICATION->arAuthResult
 								)

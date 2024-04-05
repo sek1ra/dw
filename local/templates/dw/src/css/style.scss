@@ -310,6 +310,25 @@ header {
         @media(max-width:350px) {
           display: none;
         }
+        &.filled {
+          max-width: 60px;
+          overflow: hidden;
+          white-space: nowrap;
+          position: relative;
+          &::before, &::after {
+            content: "";
+            position: absolute;
+            right: 0;top: 0;bottom: 0;
+            width: 40px;
+            background: linear-gradient(to right, transparent, var(--color-second));
+            transition: 0.2s;
+            z-index:2;
+          }
+          &::after {
+            background: linear-gradient(to right, transparent, var(--color-second-light));
+            opacity: 0;
+          }
+        }
       }
       svg {
         margin-left: 4px;
@@ -334,6 +353,14 @@ header {
         }
         svg path {
           fill: var(--color-second)
+        }
+      }
+      &:hover .filled {
+        &::before {
+          opacity: 0;
+        }
+        &::after {
+          opacity: 1;
         }
       }
     }
@@ -479,7 +506,7 @@ main.index {
       background: #f2eee3;
       flex-grow: 1;
       border-radius: 8px;
-      min-height: 240px;
+      min-height: 200px;
       svg {
         width: 104px;height: 104px;
       }
@@ -1314,6 +1341,22 @@ footer {
 }
 .profile-page {
   padding-bottom: 80px;
+  .title-wrapper {
+    position: relative;
+    .links {
+      position: absolute;
+      right: 0;
+      top:0;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 8px;
+      a {
+        color: var(--color-dark);
+      }
+    }
+  }
   form {
     .fields {
       display: flex;
@@ -1368,7 +1411,7 @@ footer {
     color: var(--color-dark);
     opacity: 0.6;
     text-decoration: underline;
-    display: block;
+    display: inline-block;
     cursor: pointer;
   }
   @media(max-width:850px) {
@@ -1546,4 +1589,45 @@ footer {
 @keyframes spinAnimation {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+.window {
+  display: none;
+  &.activewindow {
+    z-index: 100;
+    position: absolute;
+    top: 0;right: 0;bottom: 0;left: 0;
+    background: #FFFBF1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .window-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      label {
+        max-width: 360px;
+        font-size: 18px;
+        text-align: center;
+      }
+      .links {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        a {
+          padding: 8px 26px;
+          border-radius: 50px;
+          background: #F0F0F0;
+          color: #1E1E1E;
+          &.blue {
+            background: var(--color-second);
+            color: #fff;
+          }
+          &.red {
+            background: #FF4848;
+            color: #fff;
+          }
+        }
+      }
+    }
+  }
 }

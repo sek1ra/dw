@@ -20,6 +20,9 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();
 <noindex>
 <h2>Регистрация</h2>
 
+<?
+if( isset( $_REQUEST['register'] ) && $_REQUEST['register'] == 'yes' ) {
+?>
 <div class="auth-message-wrapper">
 	<?
 	if($arResult["SHOW_SMS_FIELD"] == true) {
@@ -33,7 +36,9 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();
 		<p><?echo GetMessage("AUTH_EMAIL_SENT")?></p>
 	<?endif;?>
 </div>
-
+<?
+}
+?>
 <?if(!$arResult["SHOW_EMAIL_SENT_CONFIRMATION"]):?>
 	<form class="fields" method="post" action="<?=$arResult["AUTH_URL"]?>" name="bform" enctype="multipart/form-data">
 		<input type="hidden" name="AUTH_FORM" value="Y" />

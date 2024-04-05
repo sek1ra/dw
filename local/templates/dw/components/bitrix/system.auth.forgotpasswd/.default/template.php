@@ -1,9 +1,8 @@
 <?if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();?><?
 
-if (!empty($arParams["~AUTH_RESULT"]))
-{
-	ShowMessage($arParams["~AUTH_RESULT"]);
-}
+//if (!empty($arParams["~AUTH_RESULT"])) {
+	//ShowMessage($arParams["~AUTH_RESULT"]);
+//}
 
 ?>
 <form class="fields" name="bform" method="post" target="_top" action="<?=$arResult["AUTH_URL"]?>">

@@ -3,17 +3,24 @@ if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();
 ?>
 	<h2><?echo GetMessage("AUTH_TITLE")?></h2>
 
-	<div class="auth-message-wrapper">
 	<?
-	if (!empty($arParams["~AUTH_RESULT"])) {
-		ShowMessage($arParams["~AUTH_RESULT"]);
-	}
+	if( isset( $_REQUEST['login'] ) && $_REQUEST['login'] == 'yes' ) {
+	?>
+	
+		<div class="auth-message-wrapper">
+		<?
+		if (!empty($arParams["~AUTH_RESULT"])) {
+			ShowMessage($arParams["~AUTH_RESULT"]);
+		}
 
-	if (!empty($arResult['ERROR_MESSAGE'])) {
-		ShowMessage($arResult['ERROR_MESSAGE']);
+		if (!empty($arResult['ERROR_MESSAGE'])) {
+			ShowMessage($arResult['ERROR_MESSAGE']);
+		}
+		?>
+		</div>
+		<?
 	}
 	?>
-	</div>
 
 	<form name="form_auth" method="post" target="_top" action="<?=$arResult["AUTH_URL"]?>" class="fields">
 		<input type="hidden" name="AUTH_FORM" value="Y" />

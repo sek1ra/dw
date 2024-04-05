@@ -52,13 +52,28 @@
                         "USE_SUGGEST" => "N",
                     ),
                     false
-                );?>
+                );
+                ?>
                 <!--<form action="">
                     <input type="text" id="search" name="q" placeholder="Поиск по сайту" value="">
                     <button class="primary-btn">Найти</button>
 				</form>-->
                 <a href="/login/" class="login">
-                    <span>Войти в лк</span>
+                    <?
+                    global $USER;
+                    if ($USER->IsAuthorized()) {
+                        $rsUser = CUser::GetByID($USER->GetID());
+                        $arUser = $rsUser->Fetch();
+                        if( $arUser['NAME'] != '' || $arUser['LAST_NAME'] != '' ) {
+                            $text = $arUser['NAME'].' '.$arUser['LAST_NAME'];
+                        } else {
+                            $text = $arUser['LOGIN'];
+                        }
+                        ?><span class="filled"><?=$text?></span><?
+                    } else {
+                        ?><span>Войти в лк</span><?
+                    }
+                    ?>
                     <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M6.99992 13.6666C3.31792 13.6666 0.333252 10.6819 0.333252 6.99992C0.333252 3.31792 3.31792 0.333252 6.99992 0.333252C10.6819 0.333252 13.6666 3.31792 13.6666 6.99992C13.6666 10.6819 10.6819 13.6666 6.99992 13.6666ZM6.33325 7.52792V9.66658H7.66658V7.52792C8.01752 7.37476 8.30501 7.10543 8.48073 6.76523C8.65644 6.42503 8.70966 6.0347 8.63143 5.65988C8.5532 5.28505 8.34829 4.9486 8.05117 4.70708C7.75404 4.46557 7.38282 4.33373 6.99992 4.33373C6.61702 4.33373 6.24579 4.46557 5.94867 4.70708C5.65154 4.9486 5.44664 5.28505 5.36841 5.65988C5.29018 6.0347 5.34339 6.42503 5.51911 6.76523C5.69482 7.10543 5.98232 7.37476 6.33325 7.52792Z"/>
                     </svg>                        

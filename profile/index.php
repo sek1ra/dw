@@ -13,6 +13,13 @@ global $USER;
 $rsUser = CUser::GetByID($USER->GetID());
 $arUser = $rsUser->Fetch();
 
+if( isset( $_REQUEST['logout'] ) ) {
+    $APPLICATION->RestartBuffer();
+    $USER->Logout();
+    LocalRedirect('/');
+    die;
+}
+
 if( !$arUser ) {
     LocalRedirect('/login/');
 }
@@ -98,6 +105,7 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
     $messages = '';
     $resId = 0;
     $redirectId = 0;
+    $profileImage = '';
 
     //Обрабатываем форму проекта
     if( !empty($_POST['project_name']) ) {
@@ -176,6 +184,17 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
 
                         if( $res ) {
                             $messages ='Данные сохранены';
+
+                            $locRsUser = CUser::GetByID($USER->GetID());
+                            $locArUser = $locRsUser->Fetch();
+
+                            $resizedUserImage = CFile::ResizeImageGet(
+                                $locArUser['PERSONAL_PHOTO'],
+                                array('width' => 400, 'height' => 400),
+                                BX_RESIZE_IMAGE_EXACT,
+                                false
+                            );
+                            $profileImage = $resizedUserImage['src'];
                         } else {
                             $messages = $user->LAST_ERROR;;
                         }
@@ -236,7 +255,8 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
         Array(
             'message' => $messages,
             'resid' => $resId,
-            'redirectid' => $redirectId
+            'redirectid' => $redirectId,
+            'profileimage'  => $profileImage
         )
     );
     die;
@@ -248,7 +268,13 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
 <main>
     <section>
         <div class="profile-page">
-            <h1>Профиль</h1>
+            <div class="title-wrapper">
+                <h1>Профиль</h1>
+                <div class="links">
+                    <a href="#" class="showwindow" data-windowname="profile-logout-window">Выйти из профиля</a>
+                    <a href="#" class="showwindow" data-windowname="profile-delete-window">Удалить профиль</a>
+                </div>
+            </div>
             <div class="cols">
                 <div class="col">
                     <label for="main-photo" class="profile-title">Загрузить фото</label>
@@ -258,8 +284,14 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
                             $imgCode = '';
                             if (!empty($arUser['PERSONAL_PHOTO']) && $arUser['PERSONAL_PHOTO'] > 0) {
                                 $fileData = CFile::GetFileArray($arUser['PERSONAL_PHOTO']);
+                                $resizedUserImage = CFile::ResizeImageGet(
+                                    $fileData,
+                                    array('width' => 400, 'height' => 400),
+                                    BX_RESIZE_IMAGE_EXACT,
+                                    false
+                                );
                                 if ($fileData) {
-                                    $imgCode = '<img src="'.$fileData['SRC'].'">';
+                                    $imgCode = '<img src="'.$resizedUserImage['src'].'">';
                                 }
                             }
                             ?>
@@ -588,6 +620,25 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
     </div>
 </main>
 
+<div id="profile-logout-window" class="window">
+    <div class="window-wrapper">
+        <label>Вы действительно хотите выйти из профиля?</label>
+        <div class="links">
+            <a class="accept blue" href="/profile/?logout">Да, выйти</a>
+            <a class="reject" href="#">Нет</a>
+        </div>
+    </div>
+</div>
+
+<div id="profile-delete-window" class="window">
+    <div class="window-wrapper">
+        <label>Вы действительно хотите удалить свой профиль?</label>
+        <div class="links">
+            <a class="accept red" href="/profile/?delete">Да, удалить</a>
+            <a class="reject" href="#">Нет</a>
+        </div>
+    </div>
+</div>
 
 
 <?require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");?>
