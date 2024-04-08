@@ -104,8 +104,7 @@ $arUser = $rsUser->Fetch();
 				if( $arResult['PROPERTIES']['RATING']['VALUE'] > 0 ) {
 					$currRating = $arResult['PROPERTIES']['RATING']['VALUE'];
 				}
-			?>
-			<?
+
 			$addedClass = '';
 			//если свой проект
 			if( $arResult['PROPERTIES']['USERID']['VALUE'] == $USER->GetID() ) {
@@ -207,7 +206,7 @@ $arUser = $rsUser->Fetch();
 	<div class="colored pt75">
 		<section>
 			<?php
-			$userServicesFilter = array( 'IBLOCK_ID' => 7, 'ACTIVE' => 'Y', 'PROPERTY_USER' => $USER->GetID() );
+			$userServicesFilter = array( 'IBLOCK_ID' => 7, 'ACTIVE' => 'Y', 'PROPERTY_USER' => $arResult['PROPERTIES']['USERID']['VALUE'] );
 			$userServicesItems = CIBlockElement::GetList( 
 				array('SORT' => 'ASC'),
 				$userServicesFilter, 
