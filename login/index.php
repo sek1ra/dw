@@ -15,6 +15,17 @@ $APPLICATION->SetTitle("Вход на сайт");
 <main>
 	<section>
 		<div class="login-page">
+		<?php
+			if( isset( $_REQUEST['change_password'] ) ) {
+				$APPLICATION->IncludeComponent(
+					"bitrix:system.auth.changepasswd",
+					"",
+					array(
+						"SHOW_ERRORS" => "Y",
+						'AUTH_RESULT' => $APPLICATION->arAuthResult
+					)
+				);
+			} else {?>
 			<?php
 			$startPage = 0;
 			if( !empty( $_REQUEST['register'] ) && $_REQUEST['register'] == 'yes' ) {
@@ -79,9 +90,21 @@ $APPLICATION->SetTitle("Вход на сайт");
 							);
 							?>
 						</li>
+						<li class="splide__slide">
+							<?php
+							$APPLICATION->IncludeComponent(
+								"bitrix:system.auth.changepasswd",
+								"",
+								array()
+							);
+							?>
+						</li>
 					</ul>
 				</div>
 			</div>
+			<?
+			}
+			?>
 		</div>
 	</section>
 </main>

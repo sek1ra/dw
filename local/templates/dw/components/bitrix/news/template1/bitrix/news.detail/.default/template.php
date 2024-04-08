@@ -118,8 +118,10 @@ $arUser = $rsUser->Fetch();
 			);
 			$rsItems = CIBlockElement::GetList( array(), $arFilter, false, false, array('ID') );
 			$count = $rsItems->SelectedRowsCount();
+			$hadVoted = 0;
 			if( $count > 0 ) {
 				$addedClass = ' disabled';
+				$hadVoted = 1;
 			}
 			?>
 			<div id="ratingWrapper" class="rating<?=$addedClass?>">
@@ -166,6 +168,14 @@ $arUser = $rsUser->Fetch();
 				</div>
 				<input type="hidden" id="currentRating" value="<?=$arResult['PROPERTIES']['RATING']['VALUE']?>">
 				<input type="hidden" id="postid" value="<?=$arResult['ID']?>">
+				<?if( $hadVoted == 0 ) {?>
+					<a href="#" class="saveRating">Сохранить</a>
+					<span class="notify">Будьте внимательны, изменить оценку проекта нельзя!</span>
+				<?} else {
+					?>
+					<span class="saveRating">Проект оценен</span>
+					<?
+				}?>
 			</div>
 			<?
 			}

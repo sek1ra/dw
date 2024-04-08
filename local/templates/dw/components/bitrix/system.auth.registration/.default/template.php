@@ -137,10 +137,11 @@ if( isset( $_REQUEST['register'] ) && $_REQUEST['register'] == 'yes' ) {
 		<?
 		}
 		?>
-		<?$APPLICATION->IncludeComponent("bitrix:main.userconsent.request", "",
+		<?$APPLICATION->IncludeComponent(
+			"bitrix:main.userconsent.request", "",
 			array(
-				"ID" => COption::getOptionString("main", "new_user_agreement", ""),
-				"IS_CHECKED" => "Y",
+				"ID" => 1,
+				"IS_CHECKED" => "N",
 				"AUTO_SAVE" => "N",
 				"IS_LOADED" => "Y",
 				"ORIGINATOR_ID" => $arResult["AGREEMENT_ORIGINATOR_ID"],

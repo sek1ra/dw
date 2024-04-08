@@ -144,22 +144,31 @@ function handleFiles(files, dropArea) {
       reader.onload = function(e) {
         const img = new Image();
         img.src = e.target.result;
-        img.className = 'unsaved'
+
+        const link = document.createElement('a');
+        link.href = '#';
+        link.className = 'unsaved'
+        link.appendChild(img);
+
         const imagePreview = dropArea.querySelector('.js-image-preview')
         if(imagePreview) {
           imagePreview.innerHTML = '';
-          imagePreview.appendChild(img);
+          imagePreview.appendChild(link);
           dropArea.classList.add('loaded');
         } else if(dropArea.dataset.imagepreview) {
           const extImagePreview = document.getElementById(dropArea.dataset.imagepreview)
           if(extImagePreview) {
-              extImagePreview.appendChild(img);
+              const imgsPreviewCount = extImagePreview.querySelectorAll('a').length
+              if( imgsPreviewCount < 20 ) {
+                extImagePreview.appendChild(link);
+              }
           }
         }
       }
       reader.readAsDataURL(file);
     }
   }
+  dropArea.closest(".__vprofileform").querySelector('input[type=submit]').disabled = false
 }
 
 const filesElems = document.querySelectorAll('.js-file-elem')
@@ -239,6 +248,17 @@ function initRangeItem( rangeItem ) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll(".__vprofileform").forEach( form => {
+    form.querySelectorAll("input, textarea, checkbox").forEach( item => {
+      item.addEventListener('input', function(e) {
+        e.target.closest(".__vprofileform").querySelector('input[type=submit]').disabled = false
+      })
+      item.addEventListener('change', function(e) {
+        e.target.closest(".__vprofileform").querySelector('input[type=submit]').disabled = false
+      })
+    })
+    form.dataset.defaultvalue = this.value
+  })
   document.querySelectorAll('.profileform').forEach( form => {
     form.addEventListener('submit', function(event) {
       if( event.target.classList.contains("loading") ) {
@@ -256,6 +276,7 @@ document.addEventListener('DOMContentLoaded', function() {
       xhr.onload = function() {
         event.target.classList.remove('loading');
         if (xhr.status === 200) {
+          event.target.querySelector("input[type=submit]").disabled = true
           event.target.querySelectorAll('.unsaved').forEach( el => {
             el.classList.remove('unsaved')
           })
@@ -272,6 +293,9 @@ document.addEventListener('DOMContentLoaded', function() {
               buttonWrapper.append('<a href="/profile/?projectid='+response.resid+'&delete">удалить&nbsp;проект</a>');
             }
           }
+          if( response.profileimages ) {
+            document.getElementById("galleryPreviews").innerHTML = response.profileimages
+          }
         } else {
           console.error('Request failed. Status: ' + xhr.status);
         }
@@ -286,113 +310,144 @@ document.addEventListener('DOMContentLoaded', function() {
   })
 
   document.addEventListener('click', function(event){
-      if (event.target.classList.contains('load-more')) {
-        event.preventDefault();
-        if (event.target.classList.contains('loading')) {
-          return;
-        }
-        event.target.classList.add('loading')
-        var targetContainer = document.querySelector('.portfolio'),
-            url = event.target.getAttribute('data-url');
- 
-        if (url !== null) {
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', url, true);
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    var response = xhr.responseText;
-                    var parser = new DOMParser();
-                    var doc = parser.parseFromString(response, 'text/html');
-                    var elements = doc.querySelectorAll('.item'); // Ищем элементы
-                    var pagination = doc.querySelector('.load-more'); // Ищем навигацию
-
-                    // Удаляем старую навигацию
-                    var oldLoadMore = document.querySelector('.load-more');
-                    if (oldLoadMore) {
-                        oldLoadMore.parentNode.removeChild(oldLoadMore);
-                    }
-
-                    // Добавляем посты в конец контейнера
-                    elements.forEach(function(element){
-                        targetContainer.appendChild(element);
-                    });
-
-                    // Добавляем навигацию следом
-                    if (pagination) {
-                        targetContainer.appendChild(pagination);
-                    }
-                }
-            };
-            xhr.send();
-        }
+    if( event.target.closest("#galleryPreviews") && event.target.id != "galleryPreviews" ) {
+      event.preventDefault();
+      if( event.target.tagName == 'A' && !event.target.classList.contains("unsaved") ) {
+        document.getElementById("profile-img-delete-window").classList.add("activewindow")
+        document.querySelector("#profile-img-delete-window .ajaxaccept").dataset.imgid = event.target.dataset.imgid
       }
+      return false;
+    }
+    if (event.target.classList.contains('load-more')) {
+      event.preventDefault();
+      if (event.target.classList.contains('loading')) {
+        return;
+      }
+      event.target.classList.add('loading')
+      var targetContainer = document.querySelector('.portfolio'),
+          url = event.target.getAttribute('data-url');
+
+      if (url !== null) {
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET', url, true);
+          xhr.onreadystatechange = function () {
+              if (xhr.readyState === 4 && xhr.status === 200) {
+                  var response = xhr.responseText;
+                  var parser = new DOMParser();
+                  var doc = parser.parseFromString(response, 'text/html');
+                  var elements = doc.querySelectorAll('.item'); // Ищем элементы
+                  var pagination = doc.querySelector('.load-more'); // Ищем навигацию
+
+                  // Удаляем старую навигацию
+                  var oldLoadMore = document.querySelector('.load-more');
+                  if (oldLoadMore) {
+                      oldLoadMore.parentNode.removeChild(oldLoadMore);
+                  }
+
+                  // Добавляем посты в конец контейнера
+                  elements.forEach(function(element){
+                      targetContainer.appendChild(element);
+                  });
+
+                  // Добавляем навигацию следом
+                  if (pagination) {
+                      targetContainer.appendChild(pagination);
+                  }
+              }
+          };
+          xhr.send();
+      }
+    }
   });
 });
 
+/** START RATE BLOCK */
 const rating = document.getElementById("ratingWrapper")
 if( rating && !rating.classList.contains("disabled") ) {
   function handleMouseEnter(e) {
     e.stopPropagation();
-    let indx = parseInt(this.dataset.index);
-    for (let i = 1; i <= 5; i++) {
-      let img = document.querySelector(".setRating img:nth-child(" + i + ")");
-      if (i <= indx) {
-          img.src = img.dataset.full;
-      } else {
-          img.src = img.dataset.empty;
+    if( !document.getElementById("ratingWrapper").classList.contains("disabled") ) {
+      let indx = parseInt(this.dataset.index);
+      for (let i = 1; i <= 5; i++) {
+        let img = document.querySelector(".setRating img:nth-child(" + i + ")");
+        if (i <= indx) {
+            img.src = img.dataset.full;
+        } else {
+            img.src = img.dataset.empty;
+        }
       }
     }
   }
 
-  function handleClick() {
-    document.getElementById("currentRating").value = parseInt(this.dataset.index);
+  const saveLink = document.querySelector(".saveRating")
+  if( saveLink ) {
+    saveLink.addEventListener("click", function(e) {
+      e.preventDefault();
+      if( 
+        !document.getElementById("ratingWrapper").classList.contains("disabled")
+        &&
+        document.getElementById("ratingWrapper").classList.contains("allowToSave")
+      ) {
+        var formData = new FormData();
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '', true);
 
-    var formData = new FormData();
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', '', true);
-
-    xhr.onload = function() {
-      if (xhr.status === 200) {
-        const response = JSON.parse(xhr.responseText);
-        if( !response.error ) {
-          document.querySelector('.setRating .curRating').style.width = ( response.value * 100 / 5 )+'%';
-          document.querySelector('.setRating .count').innerHTML = response.count
-          document.getElementById("ratingWrapper").classList.add("disabled")
+        xhr.onload = function() {
+          if (xhr.status === 200) {
+            const response = JSON.parse(xhr.responseText);
+            if( !response.error ) {
+              document.querySelector('.setRating .curRating').style.width = ( response.value * 100 / 5 )+'%';
+              document.querySelector('.setRating .count').innerHTML = response.count
+              document.getElementById("ratingWrapper").classList.add("disabled")
+              document.getElementById("ratingWrapper").classList.remove("allowToSave")
+              document.querySelector(".saveRating").innerHTML = 'Проект оценен'
+            }
+          } else {
+            console.error('Request failed. Status: ' + xhr.status);
+          }
         }
-      } else {
-        console.error('Request failed. Status: ' + xhr.status);
+        xhr.onerror = function() {
+            console.error('Request failed. Network error.');
+        }
+        formData.append('rating', document.getElementById("currentRating").value);
+        formData.append('postid', document.getElementById('postid').value);
+        xhr.send(formData);
       }
-    }
-    xhr.onerror = function() {
-        console.error('Request failed. Network error.');
-    }
-    formData.append('rating', this.dataset.index);
-    formData.append('postid', document.getElementById('postid').value);
-    xhr.send(formData);
+    })
   }
 
   function handleMouseLeave(e) {
     e.stopPropagation();
-    let indx = parseInt(document.getElementById("currentRating").value);
-    
-    for (let i = 1; i <= 5; i++) {
-      let img = document.querySelector(".stars img:nth-child(" + i + ")");
-      if (i <= indx) {
-          img.src = img.dataset.full;
-      } else {
-          img.src = img.dataset.empty;
+    if( !document.getElementById("ratingWrapper").classList.contains("disabled") ) {
+      let indx = parseInt(document.getElementById("currentRating").value);
+
+      for (let i = 1; i <= 5; i++) {
+        let img = document.querySelector(".stars img:nth-child(" + i + ")");
+        if (i <= indx) {
+            img.src = img.dataset.full;
+        } else {
+            img.src = img.dataset.empty;
+        }
       }
     }
   }
 
   document.querySelectorAll(".stars img").forEach(function(img) {
     img.addEventListener("mouseenter", handleMouseEnter);
-    img.addEventListener("click", handleClick);
+    img.addEventListener("click", function() {
+      if( !document.getElementById("ratingWrapper").classList.contains("disabled") ) {
+        if( !document.getElementById("ratingWrapper").classList.contains('allowToSave') ) {
+          document.getElementById("ratingWrapper").classList.add('allowToSave')
+        }
+        document.getElementById("currentRating").value = parseInt(this.dataset.index)
+        document.querySelector('.setRating .curRating').style.width = ( this.dataset.index * 100 / 5 )+'%';
+      }
+    });
   })
 
-  document.querySelector(".stars").addEventListener("mouseleave", handleMouseLeave);
+  document.querySelector(".stars").addEventListener("mouseleave", handleMouseLeave)
 
-  let indx = parseInt(document.getElementById("currentRating").value);
+  let indx = parseInt(document.getElementById("currentRating").value)
   for (let i = 1; i <= 5; i++) {
     let img = document.querySelector(".stars img:nth-child(" + i + ")");
     if (i <= indx) {
@@ -402,6 +457,11 @@ if( rating && !rating.classList.contains("disabled") ) {
     }
   }
 }
+/** END RATE BLOCK */
+
+
+
+
 
 const showWindowLink = document.querySelectorAll(".showwindow")
 showWindowLink.forEach(element => {
@@ -414,6 +474,34 @@ showWindowLink.forEach(element => {
 const windowLinks = document.querySelectorAll(".window-wrapper .links a")
 windowLinks.forEach(element => {
   element.addEventListener('click', function(e) {
+    if( e.target.classList.contains("ajaxaccept") ) {
+      e.preventDefault()
+
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '', true);
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          const response = JSON.parse(xhr.responseText)
+          if( !response.error && response.profileimage*1 > 0) {
+            document.querySelector("#galleryPreviews a[data-imgid='"+response.profileimage+"']").remove()
+            document.getElementById("galleryPreviews").classList.remove('loading')
+          }
+        } else {
+          console.error('Request failed. Status: ' + xhr.status);
+        }
+      }
+      xhr.onerror = function() {
+        console.error('Request failed. Network error.');
+      }
+      var formData = new FormData();
+      formData.append('ajax', 1);
+      formData.append('deleteimage', e.target.dataset.imgid);
+      xhr.send(formData);
+      document.getElementById("galleryPreviews").classList.add('loading')
+      document.querySelector(".activewindow").classList.remove("activewindow")
+
+      return
+    }
     if( e.target.classList.contains("accept") ) {
       return true
     }

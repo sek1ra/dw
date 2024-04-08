@@ -38,3 +38,45 @@ function calcProjectRating( $projectId ) {
 
 	return ['count' => $ratingCount, 'value' => $ratingValue];
 }
+
+function deleteServices( $userId ) {
+	$relatedElements = [];
+	$iblockIterator = CIBlockElement::GetList(
+		[], ['IBLOCK_ID' => 7, 'PROPERTY_USER' => $userId],
+		false, false, ['ID']
+	);
+	while ($iblockElement = $iblockIterator->Fetch()) {
+		$relatedElements[] = $iblockElement['ID'];
+	}
+
+	foreach ($relatedElements as $relatedElementId) {
+		CIBlockElement::Delete($relatedElementId);
+	}
+}
+function deleteProject( $projectId ) {
+	//Удаляем результаты голосования за этот проект
+	$relatedElements = [];
+	$iblockIterator = CIBlockElement::GetList(
+		[],
+		['IBLOCK_ID' => 8, 'PROPERTY_PROJECT' => $projectId],
+		false,
+		false,
+		['ID']
+	);
+	while ($iblockElement = $iblockIterator->Fetch()) {
+		$relatedElements[] = $iblockElement['ID'];
+	}
+
+	foreach ($relatedElements as $relatedElementId) {
+		CIBlockElement::Delete($relatedElementId);
+	}
+
+	$res = CIBlockElement::GetProperty( 5, $projectElement['ID'], array(), array("CODE" => "GALLERY") );
+	while ($arProperty = $res->Fetch()) {
+		if ($arProperty['PROPERTY_TYPE'] == 'F' && $arProperty['VALUE']) {
+			CFile::Delete($arProperty['VALUE']);
+		}
+	}
+
+	return CIBlockElement::Delete($projectId);
+}

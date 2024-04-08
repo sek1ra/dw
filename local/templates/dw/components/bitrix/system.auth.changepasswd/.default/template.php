@@ -6,16 +6,23 @@ if($arResult["PHONE_REGISTRATION"])
 }
 ?>
 
-<div class="bx-auth">
-
-<?
-if (!empty($arParams["~AUTH_RESULT"]))
-{
-	ShowMessage($arParams["~AUTH_RESULT"]);
-}
-?>
+<div class="bx-auth" style="display: flex;flex-direction: column; align-items: center;">
 
 <?if($arResult["SHOW_FORM"]):?>
+
+<div class="auth-message-wrapper">
+	<?
+	if($arResult["SHOW_SMS_FIELD"] == true) {
+		CJSCore::Init('phone_auth');
+	}
+	if (!empty($arParams["~AUTH_RESULT"])) {
+		ShowMessage($arParams["~AUTH_RESULT"]);
+	}
+	?>
+	<?if($arResult["SHOW_EMAIL_SENT_CONFIRMATION"]):?>
+		<p><?echo GetMessage("AUTH_EMAIL_SENT")?></p>
+	<?endif;?>
+</div>
 
 <form method="post" action="<?=$arResult["AUTH_URL"]?>" name="bform">
 	<?if ($arResult["BACKURL"] <> ''): ?>
@@ -104,7 +111,7 @@ document.getElementById('bx_auth_secure').style.display = 'inline-block';
 		<tfoot>
 			<tr>
 				<td></td>
-				<td><input type="submit" name="change_pwd" value="<?=GetMessage("AUTH_CHANGE")?>" /></td>
+				<td><input class="light-btn" type="submit" name="change_pwd" value="<?=GetMessage("AUTH_CHANGE")?>" /></td>
 			</tr>
 		</tfoot>
 	</table>

@@ -24,6 +24,30 @@ if( !$arUser ) {
     LocalRedirect('/login/');
 }
 
+if( !empty( $_GET['delete'] ) ) {
+    //Удаляем проекты
+    $projectsFilter = array( 
+        'IBLOCK_ID' => 5, 'ACTIVE' => 'Y',
+        'PROPERTY_USERID' => $USER->GetID(), '!ID' => Array( $projectElement['ID'] )
+    );
+    $projectsItems = CIBlockElement::GetList( 
+        array('SORT' => 'ASC'), 
+        $projectsFilter, 
+        false, 
+        false, 
+        array('ID')
+    );
+    while ($projectItem = $projectsItems->GetNext()) {
+        deleteProject( $projectItem['ID'] );
+    }
+    //Удаляем услуги
+    deleteServices( $USER->GetID() );
+    //Удаляем пользователя
+    CUser::Delete( $USER->GetID() );
+
+    LocalRedirect('/');
+}
+
 //Получаем все услуги
 $servicesFilter = array( 'IBLOCK_ID' => 6, 'ACTIVE' => 'Y' );
 $servicesItems = CIBlockElement::GetList( 
@@ -40,6 +64,7 @@ while ($serviceItem = $servicesItems->GetNext()) {
     $serviceIds[]=$serviceItem['ID'];
     $servicesData[]=$serviceItem;
 }
+
 
 $projectElement = false;
 $servicesList = [];
@@ -63,21 +88,22 @@ if( !empty( $_REQUEST['projectid'] ) ) {
     $projectElement = $projectElement->fields;
     $currentProjectId = $projectElement['ID'];
 
-    if( isset( $_REQUEST['delete'] ) ) {
-        CIBlockElement::Delete($currentProjectId);
-        LocalRedirect('/profile/');
+    //Удаляем проект
+    if( !empty($_GET['deleteproject']) ) {
+        if (!deleteProject($currentProjectId)) {
+            die('Ошибка при удалении основного элемента');
+        } else {
+            LocalRedirect('/profile/');
+        }
     }
 
-    $res = CIBlockElement::GetProperty(
-        5,
-        $projectElement['ID'],
-        array(),
-        array("CODE" => "GALLERY")
-    );
-    $galleryImages = array();
+    $res = CIBlockElement::GetProperty( 5, $projectElement['ID'], array(), array("CODE" => "GALLERY") );
+    $galleryImages = [];
+    $galleryValues = [];
     while ($arProperty = $res->Fetch()) {
         if ($arProperty['PROPERTY_TYPE'] == 'F' && $arProperty['VALUE']) {
             $fileArray = CFile::GetFileArray($arProperty['VALUE']);
+            $galleryValues[]=$arProperty['VALUE'];
             if ($fileArray) {
                 $galleryImages[] = $fileArray;
             }
@@ -106,7 +132,28 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
     $resId = 0;
     $redirectId = 0;
     $profileImage = '';
+    $resImgs = '';
 
+    //Удаляем изображение проекта
+    if( !empty($_POST['deleteimage']) ) {
+        $dbProps = CIBlockElement::GetProperty(5, $currentProjectId, 'sort', 'asc', ['CODE' => 'GALLERY']);
+        $arr = [];
+        while ($arItem = $dbProps->Fetch()) {
+            //Если это то изображение, которое нужно удалить
+            if ($arItem['VALUE'] == $_POST['deleteimage']) {
+                $fileData = CFile::GetFileArray($arItem['VALUE']);
+                \CFile::Delete($arItem['VALUE']);
+                $new_make_file = [ "del" => "Y" ];
+                CIBlockElement::SetPropertyValueCode(
+                    92,
+                    'GALLERY',
+                    Array ($arItem['PROPERTY_VALUE_ID'] => Array("VALUE"=>$new_make_file) )
+                );
+            }
+        }
+        //вернем ID изображения, которое удалили
+        $profileImage = $_POST['deleteimage'];
+    }
     //Обрабатываем форму проекта
     if( !empty($_POST['project_name']) ) {
         $services = [];
@@ -135,13 +182,17 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
     }
 
     //Заданы фотографии проекта
+    $imagesLoaded = 0;
+    if( !empty( $galleryImages ) ) {
+        $imagesLoaded = sizeof( $galleryImages );
+    }
     if( !empty( $_FILES['projectimages'] ) && $currentProjectId > 0 ) {
         $filesArray = $_FILES['projectimages'];
         if (!empty($filesArray['tmp_name'])) {
-            $filesCount = count($filesArray['tmp_name']);
+            $allowToLoadCount = min(count($filesArray['tmp_name']), 20 - $imagesLoaded);
 
             $imgIds = [];
-            for ($i = 0; $i < $filesCount; $i++) {
+            for ($i = 0; $i < $allowToLoadCount; $i++) {
                 $fileArray = CFile::MakeFileArray($filesArray['tmp_name'][$i]);
                 $fileArray['name'] = $filesArray['name'][$i];
                 $fileId = CFile::SaveFile($fileArray, "usersprojects");
@@ -154,6 +205,23 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
             }
             if( !empty( $imgIds ) ) {
                 CIBlockElement::SetPropertyValues($currentProjectId, 5, $imgIds, 'GALLERY');
+            }
+        }
+        $res = CIBlockElement::GetProperty( 5, $projectElement['ID'], array(), array("CODE" => "GALLERY") );
+
+        while ($arProperty = $res->Fetch()) {
+            if ($arProperty['PROPERTY_TYPE'] == 'F' && $arProperty['VALUE']) {
+                $fileArray = CFile::GetFileArray($arProperty['VALUE']);
+                if ($fileArray) {
+                    $resizedImage = CFile::ResizeImageGet(
+                        $fileArray['ID'], 
+                        array('width' => 300, 'height' => 200), 
+                        BX_RESIZE_IMAGE_PROPORTIONAL,
+                        true
+                    );
+                    
+                    $resImgs .= '<a data-imgid="'.$fileArray['ID'].'" href="#"><img src="'.$resizedImage['src'].'"></a>';
+                }
             }
         }
     }
@@ -196,7 +264,7 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
                             );
                             $profileImage = $resizedUserImage['src'];
                         } else {
-                            $messages = $user->LAST_ERROR;;
+                            $messages = $user->LAST_ERROR;
                         }
                     }
                 }
@@ -256,7 +324,8 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
             'message' => $messages,
             'resid' => $resId,
             'redirectid' => $redirectId,
-            'profileimage'  => $profileImage
+            'profileimage'  => $profileImage,
+            'profileimages' => $resImgs
         )
     );
     die;
@@ -279,7 +348,7 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
                 <div class="col">
                     <label for="main-photo" class="profile-title">Загрузить фото</label>
                     <div class="load-photo">
-                        <form action="" class="profileform">
+                        <form action="" class="profileform __vprofileform">
                             <?php
                             $imgCode = '';
                             if (!empty($arUser['PERSONAL_PHOTO']) && $arUser['PERSONAL_PHOTO'] > 0) {
@@ -312,20 +381,20 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
                                 <div class="js-image-preview"><?=$imgCode?></div>
                             </div>
                             <div class="fields">
-                                <input type="submit" value="Сохранить">
+                                <input type="submit" value="Сохранить" disabled>
                             </div>
                         </form>
                     </div>
                 </div>
                 <div class="col border-left">
-                    <form action="" class="profileform" data-parsley-validate>
+                    <form action="" class="profileform __vprofileform" data-parsley-validate>
                         <label for="edit-name" class="profile-title">Редактировать информацию</label>
                         <div id="main-info" class="fields">
                             <input type="text" name="profilename" id="edit-name" value="<?=(!empty($arUser['NAME']) ? $arUser['NAME'] : '')?>" placeholder="Введите имя">
                             <input type="text" name="profilesurname" id="edit-surname" value="<?=(!empty($arUser['LAST_NAME']) ? $arUser['LAST_NAME'] : '')?>" placeholder="Введите фамилию">
                             <textarea maxlength="100" name="profiledescription" id="" placeholder="Введите описание о себе (до 100 символов)"><?=(!empty($arUser['WORK_NOTES']) ? $arUser['WORK_NOTES'] : '')?></textarea>
                             <input required data-parsley-required-message="Введите ваши контакты" type="text" name="profilecontacts" id="" value="<?=(!empty($arUser['WORK_PHONE']) ? $arUser['WORK_PHONE'] : '')?>" placeholder="Введите ссылку для кнопки “связаться” на telegramm или whats’app">
-                            <input type="submit" value="Сохранить">
+                            <input type="submit" value="Сохранить" disabled>
                         </div>
 
                         <label class="profile-title">*Почта скрыта для внешнего просмотра</label>
@@ -337,11 +406,11 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
                 </div>
             </div>
 
-            <form action="" class="profileform" data-parsley-validate>
+            <form action="" class="profileform __vprofileform" data-parsley-validate>
                 <div class="gallery-loader">
                     <label for="gallery-photos" class="profile-title">Загрузить фото проекта (до 20 слайдов)</label>
-                    <div class="drop-area" data-imagepreview="galleryPreviews">
-                        <input 
+                    <div class="drop-area" data-imagepreview="galleryPreviews" data-maximages="20">
+                        <input
                             name="projectimages[]" 
                             class="js-file-elem" 
                             multiple 
@@ -365,7 +434,7 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
                                 BX_RESIZE_IMAGE_PROPORTIONAL,
                                 true
                             );
-                            echo '<img src="'.$resizedImage['src'].'">';
+                            echo '<a data-imgid="'.$galleryImage['ID'].'" href="#"><img src="'.$resizedImage['src'].'"></a>';
                         }
                     }
                     ?></div>
@@ -417,11 +486,11 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
                             ><?=$projectElement['PROPERTY_CLIENT_DESC_VALUE']?></textarea>
 
                         <div class="button">
-                            <input type="submit" value="Сохранить">
+                            <input type="submit" value="Сохранить" disabled>
                             <?
                             if( $currentProjectId ) {
                             ?>
-                            <a onclick="return confirm('Действительно удалить проект?')" href="/profile/?projectid=<?=$currentProjectId?>&delete">удалить&nbsp;проект</a>
+                            <a class="showwindow" data-windowname="profile-deleteproject-window" href="#">удалить&nbsp;проект</a>
                             <?
                             }
                             ?>
@@ -451,7 +520,7 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
                 )
             );
             ?>
-            <form action="" class="profileform" data-parsley-validate>
+            <form action="" class="profileform __vprofileform" data-parsley-validate>
                 <div class="portfolio-price profile-portfolio-price">
                     <?
                     if ($userServicesItems->SelectedRowsCount() > 0) {
@@ -550,7 +619,7 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
                     </div>
                 </div>
                 <div class="profile-service-button">
-                    <input type="submit" value="Сохранить">
+                    <input type="submit" value="Сохранить" disabled>
                 </div>
             </form>
 
@@ -620,6 +689,26 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
     </div>
 </main>
 
+<div id="profile-deleteproject-window" class="window">
+    <div class="window-wrapper">
+        <label>Вы действительно удалить проект?</label>
+        <div class="links">
+            <a class="accept red" href="/profile/?projectid=<?=$currentProjectId?>&deleteproject=1">Да, удалить</a>
+            <a class="reject" href="#">Нет</a>
+        </div>
+    </div>
+</div>
+
+<div id="profile-img-delete-window" class="window">
+    <div class="window-wrapper">
+        <label>Вы действительно удалить изображение?</label>
+        <div class="links">
+            <a class="ajaxaccept red" href="#">Да, удалить</a>
+            <a class="reject" href="#">Нет</a>
+        </div>
+    </div>
+</div>
+
 <div id="profile-logout-window" class="window">
     <div class="window-wrapper">
         <label>Вы действительно хотите выйти из профиля?</label>
@@ -634,7 +723,7 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
     <div class="window-wrapper">
         <label>Вы действительно хотите удалить свой профиль?</label>
         <div class="links">
-            <a class="accept red" href="/profile/?delete">Да, удалить</a>
+            <a class="accept red" href="/profile/?delete=1">Да, удалить</a>
             <a class="reject" href="#">Нет</a>
         </div>
     </div>

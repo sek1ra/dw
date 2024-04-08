@@ -942,6 +942,8 @@ footer section .column p {
 .portfolio-page .rating {
   position: absolute;
   margin-top: 6px;
+  display: flex;
+  flex-direction: column;
 }
 .portfolio-page .rating .setRating {
   display: inline-flex;
@@ -985,6 +987,31 @@ footer section .column p {
 }
 .portfolio-page .rating.disabled .curRating {
   display: block !important;
+}
+.portfolio-page .rating .saveRating {
+  max-width: 150px;
+  width: 100%;
+  display: block;
+  padding: 8px;
+  background: #F0F0F0;
+  color: #000;
+  border-radius: 90px;
+  text-align: center;
+  box-sizing: border-box;
+  margin-top: 12px;
+  margin-bottom: 10px;
+}
+.portfolio-page .rating.allowToSave .saveRating {
+  background: var(--color-second);
+  color: #fff;
+}
+.portfolio-page .rating .notify {
+  max-width: 150px;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 12px;
+  opacity: 0.5;
+  text-align: center;
 }
 .portfolio-page .review {
   max-width: 560px;
@@ -1105,6 +1132,16 @@ footer section .column p {
   box-sizing: border-box;
   padding: 12px;
   border-radius: 38px;
+}
+.profile-service-button input[type=submit] {
+  padding: 12px;
+  border-radius: 38px;
+  background: var(--color-second);
+  color: #fff;
+}
+.profile-service-button input[type=submit]:disabled {
+  background: #F2EEE3;
+  color: var(--color-dark);
 }
 
 .portfolio-price .add {
@@ -1540,6 +1577,12 @@ footer section .column p {
 .profile-page form .fields input[type=submit] {
   padding: 12px;
   border-radius: 38px;
+  background: var(--color-second);
+  color: #fff;
+}
+.profile-page form .fields input[type=submit]:disabled {
+  background: #F2EEE3;
+  color: var(--color-dark);
 }
 .profile-page form .fields .checkboxes {
   display: flex;
@@ -1677,18 +1720,47 @@ footer section .column p {
   width: 100%;
 }
 .profile-page #galleryPreviews {
-  display: flex;
+  display: inline-flex;
   flex-wrap: wrap;
   gap: 12px;
   margin-top: 12px;
   margin-bottom: 12px;
+  position: relative;
 }
-.profile-page #galleryPreviews img {
-  max-height: 109px;
+.profile-page #galleryPreviews a {
+  position: relative;
   border-radius: 8px;
 }
-.profile-page #galleryPreviews img.unsaved {
+.profile-page #galleryPreviews a::before {
+  content: "✖";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  transition: 0.2s;
+  border-radius: 8px;
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 30px;
+}
+.profile-page #galleryPreviews a:hover::before {
+  opacity: 1;
+}
+.profile-page #galleryPreviews a.unsaved {
   opacity: 0.6;
+}
+.profile-page #galleryPreviews a.unsaved::before {
+  display: none;
+}
+.profile-page #galleryPreviews a img {
+  max-height: 109px;
+  border-radius: 8px;
+  display: block;
 }
 .profile-page .project-desc {
   width: 60%;
@@ -1764,7 +1836,7 @@ footer section .column p {
 }
 .window.activewindow {
   z-index: 100;
-  position: absolute;
+  position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
@@ -1802,4 +1874,8 @@ footer section .column p {
 .window.activewindow .window-wrapper .links a.red {
   background: #FF4848;
   color: #fff;
+}
+
+.bx-changepass-table td {
+  padding-bottom: 10px;
 }

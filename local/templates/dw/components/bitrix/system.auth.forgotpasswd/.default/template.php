@@ -1,8 +1,22 @@
 <?if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED!==true)die();?><?
 
-//if (!empty($arParams["~AUTH_RESULT"])) {
-	//ShowMessage($arParams["~AUTH_RESULT"]);
-//}
+if( isset( $_REQUEST['register'] ) && $_REQUEST['register'] == 'yes' ) {
+?>
+<div class="auth-message-wrapper">
+	<?
+	if($arResult["SHOW_SMS_FIELD"] == true) {
+		CJSCore::Init('phone_auth');
+	}
+	if (!empty($arParams["~AUTH_RESULT"])) {
+		ShowMessage($arParams["~AUTH_RESULT"]);
+	}
+	?>
+	<?if($arResult["SHOW_EMAIL_SENT_CONFIRMATION"]):?>
+		<p><?echo GetMessage("AUTH_EMAIL_SENT")?></p>
+	<?endif;?>
+</div>
+<?
+}
 
 ?>
 <form class="fields" name="bform" method="post" target="_top" action="<?=$arResult["AUTH_URL"]?>">
@@ -22,7 +36,6 @@
 		/>
 		<input type="hidden" name="USER_EMAIL" />
 	</div>
-	<div class="notify"><?echo GetMessage("sys_forgot_pass_note_email")?></div>
 
 	<?if($arResult["USE_CAPTCHA"]):?>
 		<div style="margin-top: 16px">
@@ -39,6 +52,8 @@
 		<div class="links">
 			<a class="js-goto-link" data-page="0" href="<?=$arResult["AUTH_AUTH_URL"]?>" rel="nofollow"><?=GetMessage("AUTH_AUTH")?></a>
 		</div>
-		<input class="light-btn" type="submit" name="Register" value="<?=GetMessage("AUTH_REGISTER")?>" />
+		<input class="light-btn" type="submit" name="Register" value="Востановить" />
 	</div>
+
+	<div class="notify"><?echo GetMessage("sys_forgot_pass_note_email")?></div>
 </form>

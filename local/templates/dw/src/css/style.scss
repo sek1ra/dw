@@ -820,6 +820,8 @@ footer {
   .rating {
     position: absolute;
     margin-top: 6px;
+    display: flex;
+    flex-direction: column;
     .setRating {
       display: inline-flex;
       align-items: flex-start;
@@ -864,6 +866,33 @@ footer {
       .curRating {
         display: block !important;
       }
+    }
+    .saveRating {
+      max-width: 150px;
+      width: 100%;
+      display: block;
+      padding: 8px;
+      background: #F0F0F0;
+      color: #000;
+      border-radius: 90px;
+      text-align: center;
+      box-sizing: border-box;
+      margin-top: 12px;
+      margin-bottom: 10px;
+    }
+    &.allowToSave {
+      .saveRating {
+        background: var(--color-second);
+        color: #fff;
+      }
+    }
+    .notify {
+      max-width: 150px;
+      width: 100%;
+      box-sizing: border-box;
+      font-size: 12px;
+      opacity: 0.5;
+      text-align: center;
     }
   }
   .review {
@@ -970,6 +999,16 @@ footer {
     box-sizing: border-box;
     padding: 12px;
     border-radius: 38px;
+  }
+  input[type=submit] {
+    padding: 12px;
+    border-radius: 38px;
+    background: var(--color-second);
+    color: #fff;
+  }
+  input[type=submit]:disabled {
+    background: #F2EEE3;
+    color: var(--color-dark);
   }
 }
 .portfolio-price {
@@ -1374,6 +1413,12 @@ footer {
       input[type=submit] {
         padding: 12px;
         border-radius: 38px;
+        background: var(--color-second);
+        color: #fff;
+      }
+      input[type=submit]:disabled {
+        background: #F2EEE3;
+        color: var(--color-dark);
       }
       .checkboxes {
         display: flex;
@@ -1517,17 +1562,46 @@ footer {
     }
   }
   #galleryPreviews {
-    display: flex;
+    display: inline-flex;
     flex-wrap: wrap;
     gap: 12px;
     margin-top: 12px;
     margin-bottom: 12px;
-    img {
-        max-height: 109px;
+    position: relative;
+    a {
+      position: relative;
+      border-radius: 8px;
+      &::before {
+        content:"✖";
+        position: absolute;
+        left: 0;bottom: 0;
+        width: 100%;height: 100%;
+        background: rgba(0,0,0,0.5);
+        transition: 0.2s;
         border-radius: 8px;
-        &.unsaved {
-          opacity: 0.6;
+        opacity: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 30px;
+      }
+      &:hover {
+        &::before {
+          opacity: 1;
         }
+      }
+      &.unsaved {
+        opacity: 0.6;
+        &::before {
+          display: none;
+        }
+      }
+      img {
+          max-height: 109px;
+          border-radius: 8px;
+          display: block;
+      }
     }
   }
   .project-desc {
@@ -1594,7 +1668,7 @@ footer {
   display: none;
   &.activewindow {
     z-index: 100;
-    position: absolute;
+    position: fixed;
     top: 0;right: 0;bottom: 0;left: 0;
     background: #FFFBF1;
     display: flex;
@@ -1629,5 +1703,10 @@ footer {
         }
       }
     }
+  }
+}
+.bx-changepass-table {
+  td {
+    padding-bottom: 10px;
   }
 }
