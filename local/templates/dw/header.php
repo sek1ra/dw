@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title><?$APPLICATION->ShowTitle()?></title>
-    <link rel="stylesheet" href="<?=SITE_TEMPLATE_PATH?>/dist/style.css">
+    <link rel="stylesheet" href="<?=SITE_TEMPLATE_PATH?>/dist/style.css?1">
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap">
     <link rel="icon" type="image/png" href="<?=SITE_TEMPLATE_PATH?>/src/img/favicon.png">
