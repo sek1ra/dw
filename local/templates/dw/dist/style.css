@@ -942,8 +942,15 @@ footer section .column p {
 .portfolio-page .rating {
   position: absolute;
   margin-top: 6px;
-  display: flex;
+  display: inline-flex;
   flex-direction: column;
+}
+@media (max-width: 750px) {
+  .portfolio-page .rating {
+    position: relative;
+    margin-top: 0;
+    margin-bottom: 30px;
+  }
 }
 .portfolio-page .rating .setRating {
   display: inline-flex;
@@ -1018,7 +1025,7 @@ footer section .column p {
   margin-left: auto;
   margin-bottom: 60px;
 }
-@media (max-width: 700px) {
+@media (max-width: 750px) {
   .portfolio-page .review {
     margin-left: 0;
     max-width: 100%;
@@ -1209,11 +1216,6 @@ footer section .column p {
   padding-left: 16px;
   border-left: 1px solid var(--color-main);
 }
-@media (max-width: 550px) {
-  .portfolio-price .row .price {
-    text-align: right;
-  }
-}
 .portfolio-price .row .profile-range {
   margin-top: 18px;
 }
@@ -1307,6 +1309,18 @@ footer section .column p {
   .portfolio-price .row {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto auto auto auto;
+    border-top: 1px solid #000;
+    padding-top: 40px;
+  }
+  .portfolio-price .row:first-child {
+    border-top: none;
+  }
+  .portfolio-price .row .price::before {
+    display: none;
+  }
+  .portfolio-price .row .term, .portfolio-price .row .price {
+    border-top: none;
+    border-bottom: none;
   }
   .portfolio-price .row .num {
     grid-row: 1;
@@ -1547,6 +1561,17 @@ footer section .column p {
 .profile-page .title-wrapper {
   position: relative;
 }
+@media (max-width: 550px) {
+  .profile-page .title-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .profile-page .title-wrapper h1 {
+    margin-bottom: 0;
+  }
+}
 .profile-page .title-wrapper .links {
   position: absolute;
   right: 0;
@@ -1556,6 +1581,14 @@ footer section .column p {
   flex-direction: column;
   justify-content: center;
   gap: 8px;
+}
+@media (max-width: 550px) {
+  .profile-page .title-wrapper .links {
+    position: relative;
+    right: unset;
+    top: unset;
+    flex-direction: row;
+  }
 }
 .profile-page .title-wrapper .links a {
   color: var(--color-dark);
@@ -1594,6 +1627,9 @@ footer section .column p {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+.profile-page form .fields .checkboxes .checkbox input {
+  width: auto;
 }
 .profile-page form .fields .checkboxes .checkbox label {
   white-space: nowrap;

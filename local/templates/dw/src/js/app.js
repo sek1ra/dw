@@ -281,6 +281,13 @@ document.addEventListener('DOMContentLoaded', function() {
             el.classList.remove('unsaved')
           })
           const response = JSON.parse(xhr.responseText);
+          if( response.message ) {
+            if( response.profileimage ) {
+              document.querySelector(".js-image-preview img").src = response.profileimage
+            }
+            alert( response.message )
+            return
+          }
           if( response.redirectid ) {
             window.history.pushState(null, null, '/profile/?projectid='+response.redirectid);
           }
@@ -297,7 +304,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById("galleryPreviews").innerHTML = response.profileimages
           }
         } else {
-          console.error('Request failed. Status: ' + xhr.status);
+          //console.error('Request failed. Status: ' + xhr.status);
         }
       }
       xhr.onerror = function() {
@@ -395,6 +402,10 @@ if( rating && !rating.classList.contains("disabled") ) {
         xhr.onload = function() {
           if (xhr.status === 200) {
             const response = JSON.parse(xhr.responseText);
+            if( response.message ) {
+              alert( response.message )
+              return
+            }
             if( !response.error ) {
               document.querySelector('.setRating .curRating').style.width = ( response.value * 100 / 5 )+'%';
               document.querySelector('.setRating .count').innerHTML = response.count
@@ -482,6 +493,10 @@ windowLinks.forEach(element => {
       xhr.onload = function() {
         if (xhr.status === 200) {
           const response = JSON.parse(xhr.responseText)
+          if( response.message ) {
+            alert( response.message )
+            return
+          }
           if( !response.error && response.profileimage*1 > 0) {
             document.querySelector("#galleryPreviews a[data-imgid='"+response.profileimage+"']").remove()
             document.getElementById("galleryPreviews").classList.remove('loading')

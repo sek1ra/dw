@@ -127,7 +127,7 @@ if( !empty( $_REQUEST['projectid'] ) ) {
 if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
     $APPLICATION->RestartBuffer();
     $allowedFileTypes = ['image/jpeg', 'image/png', 'image/gif'];
-    $maxFileSize = 2097152; //2MB
+    $maxFileSize = 1024*1024;//5242880; //5MB
     $messages = '';
     $resId = 0;
     $redirectId = 0;
@@ -234,7 +234,7 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
                 $messages='Ошибка при загрузке файла: ' . $uploadedFile['error'];
             } else {
                 if ($uploadedFile['size'] > $maxFileSize) {
-                    $messages='Файл слишком большой. Максимальный размер: 2 МБ';
+                    $messages='Файл слишком большой. Максимальный размер: 5 МБ';
                 } else {
                     if (!in_array($uploadedFile['type'], $allowedFileTypes)) {
                         $messages='Недопустимый тип файла. Разрешены только изображения в форматах JPEG, PNG и GIF';
@@ -251,7 +251,7 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
                         $res = $user->Update($USER->GetID(), $userFields);
 
                         if( $res ) {
-                            $messages ='Данные сохранены';
+                            //$messages ='Данные сохранены';
 
                             $locRsUser = CUser::GetByID($USER->GetID());
                             $locArUser = $locRsUser->Fetch();
@@ -270,6 +270,17 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
                 }
             }
         }
+
+        $fileData = CFile::GetFileArray($arUser['PERSONAL_PHOTO']);
+        $resizedUserImage = CFile::ResizeImageGet(
+            $fileData,
+            array('width' => 400, 'height' => 400),
+            BX_RESIZE_IMAGE_EXACT,
+            false
+        );
+        if ($fileData) {
+            $profileImage = $resizedUserImage['src'];
+        }
     }
 
     if( isset( $_POST['profilename'] ) ) {
@@ -282,7 +293,7 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
         ];
         $res = $user->Update($USER->GetID(), $userFields);
         if( $res ) {
-            $messages ='Данные сохранены';
+            //$messages ='Данные сохранены';
         } else {
             $messages = $user->LAST_ERROR;
         }
