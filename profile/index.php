@@ -127,7 +127,7 @@ if( !empty( $_REQUEST['projectid'] ) ) {
 if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
     $APPLICATION->RestartBuffer();
     $allowedFileTypes = ['image/jpeg', 'image/png', 'image/gif'];
-    $maxFileSize = 1024*1024;//5242880; //5MB
+    $maxFileSize = 5242880; //5MB
     $messages = '';
     $resId = 0;
     $redirectId = 0;
