@@ -1917,3 +1917,8 @@ footer section .column p {
 .bx-changepass-table td {
   padding-bottom: 10px;
 }
+
+.consestWrapper {
+  display: flex;
+  gap: 8px;
+}

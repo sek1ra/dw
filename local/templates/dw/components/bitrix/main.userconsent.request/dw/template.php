@@ -29,15 +29,17 @@ else
 	$linkClassName .= '-link';
 }
 ?>
-<label data-bx-user-consent="<?=htmlspecialcharsbx($config)?>" class="main-user-consent-request">
-	<input type="checkbox" value="Y" <?=($arParams['IS_CHECKED'] ? 'checked' : '')?> name="<?=htmlspecialcharsbx($arParams['INPUT_NAME'])?>">
+<div class="consestWrapper">
+	<span data-bx-user-consent="<?=htmlspecialcharsbx($config)?>" class="main-user-consent-request">
+		<input type="checkbox" value="Y" <?=($arParams['IS_CHECKED'] ? 'checked' : '')?> name="<?=htmlspecialcharsbx($arParams['INPUT_NAME'])?>">
+	</span>
 	<span class="<?=$linkClassName?>">
 		Соглашаюсь с 
-			<a href="https://drive.google.com/drive/folders/1TjvF6Nfmpu_qmmC2TDGVekaSuRewOj_S?usp=sharing">политикой конфиденциальности</a>, 
-			<a href="https://drive.google.com/drive/folders/1TjvF6Nfmpu_qmmC2TDGVekaSuRewOj_S?usp=sharing">обработкой персональных данных</a> и 
-			<a href="https://drive.google.com/drive/folders/1TjvF6Nfmpu_qmmC2TDGVekaSuRewOj_S?usp=sharing">получением рекламной рассылки</a>
+		<a target="_blank" href="https://drive.google.com/drive/folders/1TjvF6Nfmpu_qmmC2TDGVekaSuRewOj_S?usp=sharing">политикой конфиденциальности</a>, 
+		<a target="_blank" href="https://drive.google.com/drive/folders/1TjvF6Nfmpu_qmmC2TDGVekaSuRewOj_S?usp=sharing">обработкой персональных данных</a> и 
+		<a target="_blank" href="https://drive.google.com/drive/folders/1TjvF6Nfmpu_qmmC2TDGVekaSuRewOj_S?usp=sharing">получением рекламной рассылки</a>
 	</span>
-</label>
+</div>
 <div data-bx-template="main-user-consent-request-loader" style="display: none;">
 	<div class="main-user-consent-request-popup">
 		<div class="main-user-consent-request-popup-cont">
