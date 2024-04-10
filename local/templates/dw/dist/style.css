@@ -319,6 +319,7 @@ header nav ul a.light-btn {
 header .controls {
   display: flex;
   align-items: stretch;
+  height: 25px;
 }
 header .controls form {
   display: flex;
