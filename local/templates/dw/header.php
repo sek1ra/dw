@@ -47,17 +47,18 @@
             );?>
 
             <div class="controls">
-                <?$APPLICATION->IncludeComponent("bitrix:search.form", "top_search_form", Array(
+                <?/*$APPLICATION->IncludeComponent("bitrix:search.form", "top_search_form", Array(
                         "PAGE" => "#SITE_DIR#search/index.php",	// Страница выдачи результатов поиска (доступен макрос #SITE_DIR#)
                         "USE_SUGGEST" => "N",
                     ),
                     false
                 );
-                ?>
                 <!--<form action="">
                     <input type="text" id="search" name="q" placeholder="Поиск по сайту" value="">
                     <button class="primary-btn">Найти</button>
 				</form>-->
+                */
+                ?>
                 <a href="/login/" class="login">
                     <?
                     global $USER;
