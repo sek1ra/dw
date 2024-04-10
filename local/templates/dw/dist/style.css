@@ -1683,31 +1683,33 @@ footer section .column p {
 .profile-page .border-left {
   border-left: 1px solid var(--color-main);
   padding-left: 24px;
-  /*#main-info {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 40px;
-    input, textarea {
-      display: none;
-    }
-    .name {
-      font: 400 66px/1em var(--font-title);
-      letter-spacing: -0.04em;
-    }
-    .desc, .link {
-      font: 500 14px/18px var(--font-main);
-      letter-spacing: -0.04em;
-    }
-    label {
-      display: none;
-    }
-  }*/
 }
 .profile-page .border-left #edit-main-info {
   display: none;
 }
-.profile-page .border-left .contacts {
+.profile-page .border-left .linksWrapper {
+  display: flex;
+  justify-content: space-between;
+}
+@media (max-width: 550px) {
+  .profile-page .border-left .linksWrapper {
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 25px;
+    margin-bottom: 20px;
+  }
+}
+.profile-page .border-left .linksWrapper .links {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+@media (max-width: 550px) {
+  .profile-page .border-left .linksWrapper .links {
+    align-items: flex-start;
+  }
+}
+.profile-page .border-left .linksWrapper .email .contacts {
   display: flex;
   flex-direction: column;
   gap: 4px;

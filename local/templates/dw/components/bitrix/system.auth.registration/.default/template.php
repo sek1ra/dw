@@ -138,7 +138,7 @@ if( isset( $_REQUEST['register'] ) && $_REQUEST['register'] == 'yes' ) {
 		}
 		?>
 		<?$APPLICATION->IncludeComponent(
-			"bitrix:main.userconsent.request", "",
+			"bitrix:main.userconsent.request", "dw",
 			array(
 				"ID" => 1,
 				"IS_CHECKED" => "N",

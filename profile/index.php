@@ -350,10 +350,6 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
         <div class="profile-page">
             <div class="title-wrapper">
                 <h1>Профиль</h1>
-                <div class="links">
-                    <a href="#" class="showwindow" data-windowname="profile-logout-window">Выйти из профиля</a>
-                    <a href="#" class="showwindow" data-windowname="profile-delete-window">Удалить профиль</a>
-                </div>
             </div>
             <div class="cols">
                 <div class="col">
@@ -408,10 +404,18 @@ if( isset( $_POST['ajax'] ) && $_POST['ajax'] == 1 ) {
                             <input type="submit" value="Сохранить" disabled>
                         </div>
 
-                        <label class="profile-title">*Почта скрыта для внешнего просмотра</label>
-                        <div class="contacts">
-                            <!--<span>8 (929) 999-99-99</span>-->
-                            <span><?=$arUser['EMAIL']?></span>
+                        <div class="linksWrapper">
+                            <div class="email">
+                                <label class="profile-title">*Почта скрыта для внешнего просмотра</label>
+                                <div class="contacts">
+                                    <!--<span>8 (929) 999-99-99</span>-->
+                                    <span><?=$arUser['EMAIL']?></span>
+                                </div>
+                            </div>
+                            <div class="links">
+                                <a href="#" class="showwindow" data-windowname="profile-logout-window">Выйти из профиля</a>
+                                <a href="#" class="showwindow" data-windowname="profile-delete-window">Удалить профиль</a>
+                            </div>
                         </div>
                     </form>
                 </div>
